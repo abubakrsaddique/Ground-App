@@ -175,7 +175,7 @@ const Banner = () => {
             </a>
           </div>
 
-          <div className="relative z-[100] flex cursor-pointer items-center justify-center px-8 py-3 rounded-[50px] bg-darkbrown">
+          <div className="relative z-[100] flex cursor-pointer items-center justify-center px-8 py-3 rounded-[50px] bg-darkbrown hover:bg-lightgreen">
             <span className="relative z-10 text-primary text-base font-semi-bold leading-6">
               Login
             </span>

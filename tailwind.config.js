@@ -10,6 +10,9 @@ module.exports = {
       lightbrown: "rgb(169 164 161)",
       darkbrown: "#302A25",
       gray: "#F2EEE6",
+      "custom-hsla1": "hsla(40, 32%, 93%, 0)",
+      "custom-hsla2": "hsla(40, 32%, 93%, 0.63)",
+      "custom-f2eee6": "#f2eee6",
     },
     screens: {
       lg: { max: "1024px" },
