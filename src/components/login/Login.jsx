@@ -117,7 +117,7 @@ const Login = () => {
             </p>
           </div>
           <div className="absolute bottom-16 left-[50%] z-[10] translate-x-[-50%]  items-center gap-4 ">
-            <div className="flex items-center gap-6 mob:hidden tab:hidden">
+            <div className="flex items-center gap-6 mob:hidden tab:hidden cursor-pointer">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="139"
