@@ -1,7 +1,17 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import Image from "../../images/login.webp";
 
 const Login = () => {
+  const navigate = useNavigate();
+
+  const handleHomeClick = () => {
+    navigate("/");
+  };
+
+  const handleSignupClick = () => {
+    navigate("/signup");
+  };
   return (
     <div className="min-h-screen w-full  bg-gray">
       <div className="flex flex-row mob:flex-col-reverse tab:flex-col-reverse">
@@ -28,7 +38,10 @@ const Login = () => {
               </p>
               <p className="mt-10 text-center text-sm font-medium text-lightbrown">
                 You don’t have an account?{" "}
-                <span className="font-semibol cursor-pointer text-darkbrown underline">
+                <span
+                  className="font-semibol cursor-pointer text-darkbrown underline"
+                  onClick={handleSignupClick}
+                >
                   Sign Up
                 </span>
               </p>
@@ -40,7 +53,10 @@ const Login = () => {
             </form>
           </div>
           <div className="absolute left-8 top-8 mob:hidden flex tab:hidden ">
-            <div className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-xl border-[3px] border-darkbrown border-opacity-[0.1]">
+            <div
+              className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-xl border-[3px] border-darkbrown border-opacity-[0.1] "
+              onClick={handleHomeClick}
+            >
               <svg
                 width="16"
                 height="13"
@@ -69,7 +85,10 @@ const Login = () => {
         {/* For Mobile */}
         <div className="relative block w-full">
           <div className="absolute left-5 top-5 hidden tab:block mob:block">
-            <div className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-xl border-[3px] border-darkbrown border-opacity-[0.1]">
+            <div
+              className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-xl border-[3px] border-darkbrown border-opacity-[0.1]"
+              onClick={handleHomeClick}
+            >
               <svg
                 width="16"
                 height="13"
@@ -95,7 +114,10 @@ const Login = () => {
             </div>
           </div>
           <div className="absolute right-14 top-9 flex items-center  gap-4 mob:hidden">
-            <div className="relative z-[100] cursor-pointer overflow-hidden flex h-11 w-24 items-center justify-center rounded-3xl bg-primary text-base font-medium hover:bg-darkbrown  hover:text-primary mob:hidden">
+            <div
+              className="relative z-[100] cursor-pointer overflow-hidden flex h-11 w-24 items-center justify-center rounded-3xl bg-primary text-base font-medium hover:bg-darkbrown  hover:text-primary mob:hidden"
+              onClick={handleHomeClick}
+            >
               <span className="relative z-10"> Home</span>
             </div>
           </div>
@@ -117,7 +139,10 @@ const Login = () => {
             </p>
           </div>
           <div className="absolute bottom-16 left-[50%] z-[10] translate-x-[-50%]  items-center gap-4 ">
-            <div className="flex items-center gap-6 mob:hidden tab:hidden cursor-pointer">
+            <div
+              className="flex items-center gap-6 mob:hidden tab:hidden cursor-pointer"
+              onClick={handleHomeClick}
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="139"

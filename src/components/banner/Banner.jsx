@@ -1,10 +1,12 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import BackgroundVideo from "../../images/banner.mp4";
 import Close from "../../images/close.png";
 
 const Banner = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
+  const navigate = useNavigate();
 
   const toggleModal = () => {
     setModalOpen(!modalOpen);
@@ -12,6 +14,13 @@ const Banner = () => {
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
+  };
+
+  const handleLoginClick = () => {
+    navigate("/login");
+  };
+  const handleSignupClick = () => {
+    navigate("/signup");
   };
   return (
     <div className="relative h-full min-h-screen w-full bg-gray py-10">
@@ -175,7 +184,10 @@ const Banner = () => {
             </a>
           </div>
 
-          <div className="relative z-[100] flex cursor-pointer items-center justify-center px-8 py-3 rounded-[50px] bg-darkbrown hover:bg-lightgreen">
+          <div
+            className="relative z-[100] flex cursor-pointer items-center justify-center px-8 py-3 rounded-[50px] bg-darkbrown hover:bg-lightgreen"
+            onClick={handleLoginClick}
+          >
             <span className="relative z-10 text-primary text-base font-semi-bold leading-6">
               Login
             </span>
@@ -284,11 +296,17 @@ const Banner = () => {
                 </span>
               </div>
 
-              <div className="mt-12 flex h-[56px] w-full items-center text-primary justify-center rounded-3xl bg-darkbrown text-xl font-bold leading-6 ">
+              <div
+                className="mt-12 flex h-[56px] w-full items-center text-primary justify-center rounded-3xl bg-darkbrown text-xl font-bold leading-6 "
+                onClick={handleSignupClick}
+              >
                 Get Started
               </div>
 
-              <p className="mt-4 text-center text-base font-normal text-lightbrown leading-5 ">
+              <p
+                className="mt-4 text-center text-base font-normal text-lightbrown leading-5 "
+                onClick={handleLoginClick}
+              >
                 Already have an account?{" "}
                 <a className="text-darkbrown underline">Log In</a>
               </p>

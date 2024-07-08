@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Image from "../../images/login.webp";
 import Image1 from "../../images/image1.webp";
 import Image2 from "../../images/image2.webp";
@@ -16,6 +17,15 @@ const Signup = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedTrainer, setSelectedTrainer] = useState(null);
   const [selectedCard, setSelectedCard] = useState(1);
+  const navigate = useNavigate();
+
+  const handleLoginClick = () => {
+    navigate("/login");
+  };
+
+  const handleHomeClick = () => {
+    navigate("/");
+  };
 
   const handleCardClick = (cardNumber) => {
     if (selectedCard === cardNumber) {
@@ -40,10 +50,13 @@ const Signup = () => {
     <div className="min-h-screen w-full  bg-gray">
       <div className="flex flex-row mob:flex-col-reverse tab:flex-col-reverse">
         {/* Left Side */}
-        <div className="no-scrollbar justify-center relative flex w-[40%]">
+        <div className="no-scrollbar justify-center relative flex w-[40%] mob:w-full tab:w-full">
           <div className="w-full realtive">
             <div className="h-screen overflow-scroll mt-0 block">
-              <div className="flex h-10 w-10 cursor-pointer items-center mt-8 ml-8 justify-center rounded-xl border-[3px] border-darkbrown border-opacity-[0.1]">
+              <div
+                className="flex h-10 w-10 cursor-pointer items-center mt-8 ml-8 justify-center rounded-xl border-[3px] border-darkbrown border-opacity-[0.1] mob:hidden tab:hidden"
+                onClick={handleLoginClick}
+              >
                 <svg
                   width="16"
                   height="13"
@@ -68,15 +81,18 @@ const Signup = () => {
                 </svg>
               </div>
               <div>
-                <p className=" text-[18px] font-normal leading-4 text-lightbrown mt-12 w-[70%] mx-auto">
+                <p className=" text-[18px] font-normal leading-4 text-lightbrown mt-12 w-[70%] mx-auto mob:mx-8">
                   Already have an account?
-                  <span className="cursor-pointer  font-medium text-lightgreen underline">
+                  <span
+                    className="cursor-pointer  font-medium text-lightgreen underline"
+                    onClick={handleLoginClick}
+                  >
                     Log In
                   </span>
                 </p>
-                <div className="relative pl-5 w-[70%] mx-auto">
-                  <div className="absolute left-0 top-8 h-full border border-dashed border-lightgreen"></div>
-                  <p className="text-darkbrown -ml-9 mt-10 flex items-center gap-2 text-2xl font-bold">
+                <div className="relative pl-5 w-[70%] mx-auto mob:w-[90%] mob:pl-0">
+                  <div className="absolute left-0 top-8 h-full border border-dashed border-lightgreen mob:hidden"></div>
+                  <p className="text-darkbrown -ml-9 mt-10 flex items-center gap-2 text-2xl font-bold mob:-ml-1 mob:text-xl">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="32"
@@ -148,7 +164,7 @@ const Signup = () => {
                             {/* Images Section */}
                             <div className="no-scrollbar mb-5 flex items-center gap-1 overflow-scroll px-6">
                               {/* Image 1 */}
-                              <div className="planText relative h-20 w-20 flex-shrink-0 rounded-2xl">
+                              <div className=" relative h-20 w-20 flex-shrink-0 rounded-2xl">
                                 <img
                                   alt="img"
                                   loading="lazy"
@@ -162,7 +178,7 @@ const Signup = () => {
                                 <div className="absolute top-0 z-[1] h-full w-full rounded-2xl"></div>
                               </div>
                               {/* Image 2 */}
-                              <div className="planText relative h-20 w-20 flex-shrink-0 rounded-2xl">
+                              <div className=" relative h-20 w-20 flex-shrink-0 rounded-2xl">
                                 <img
                                   alt="img"
                                   loading="lazy"
@@ -176,7 +192,7 @@ const Signup = () => {
                                 <div className="absolute top-0 z-[1] h-full w-full rounded-2xl"></div>
                               </div>
                               {/* Image 3 */}
-                              <div className="planText relative h-20 w-20 flex-shrink-0 rounded-2xl">
+                              <div className=" relative h-20 w-20 flex-shrink-0 rounded-2xl">
                                 <img
                                   alt="img"
                                   loading="lazy"
@@ -190,7 +206,7 @@ const Signup = () => {
                                 <div className="absolute top-0 z-[1] h-full w-full rounded-2xl"></div>
                               </div>
                               {/* Image 4 */}
-                              <div className="planText relative h-20 w-20 flex-shrink-0 rounded-2xl">
+                              <div className=" relative h-20 w-20 flex-shrink-0 rounded-2xl">
                                 <img
                                   alt="img"
                                   loading="lazy"
@@ -204,7 +220,7 @@ const Signup = () => {
                                 <div className="absolute top-0 z-[1] h-full w-full rounded-2xl"></div>
                               </div>
                               {/* Image 5 */}
-                              <div className="planText relative h-20 w-20 flex-shrink-0 rounded-2xl">
+                              <div className=" relative h-20 w-20 flex-shrink-0 rounded-2xl">
                                 <img
                                   alt="img"
                                   loading="lazy"
@@ -218,7 +234,7 @@ const Signup = () => {
                                 <div className="absolute top-0 z-[1] h-full w-full rounded-2xl"></div>
                               </div>
                               {/* Image 6 */}
-                              <div className="planText relative h-20 w-20 flex-shrink-0 rounded-2xl">
+                              <div className=" relative h-20 w-20 flex-shrink-0 rounded-2xl">
                                 <img
                                   alt="img"
                                   loading="lazy"
@@ -235,7 +251,7 @@ const Signup = () => {
                                 <div className="absolute top-0 z-[1] h-full w-full rounded-[16px] checkout-imgbox-overlay"></div>
                               </div>
                               {/* Image 7 */}
-                              <div className="planText relative h-20 w-20 flex-shrink-0 rounded-2xl">
+                              <div className=" relative h-20 w-20 flex-shrink-0 rounded-2xl">
                                 <img
                                   alt="img"
                                   loading="lazy"
@@ -252,7 +268,7 @@ const Signup = () => {
                                 <div className="absolute top-0 z-[1] h-full w-full rounded-[16px] checkout-imgbox-overlay"></div>
                               </div>
                               {/* Image 8 */}
-                              <div className="planText relative h-20 w-20 flex-shrink-0 rounded-2xl">
+                              <div className=" relative h-20 w-20 flex-shrink-0 rounded-2xl">
                                 <img
                                   alt="img"
                                   loading="lazy"
@@ -269,7 +285,7 @@ const Signup = () => {
                                 <div className="absolute top-0 z-[1] h-full w-full rounded-[16px] checkout-imgbox-overlay"></div>
                               </div>
                               {/* Image 9 */}
-                              <div className="planText relative h-20 w-20 flex-shrink-0 rounded-2xl">
+                              <div className=" relative h-20 w-20 flex-shrink-0 rounded-2xl">
                                 <img
                                   alt="img"
                                   loading="lazy"
@@ -286,7 +302,7 @@ const Signup = () => {
                                 <div className="absolute top-0 z-[1] h-full w-full rounded-[16px] checkout-imgbox-overlay"></div>
                               </div>
                               {/* Image 10 */}
-                              <div className="planText relative h-20 w-20 flex-shrink-0 rounded-2xl">
+                              <div className=" relative h-20 w-20 flex-shrink-0 rounded-2xl">
                                 <img
                                   alt="img"
                                   loading="lazy"
@@ -303,7 +319,7 @@ const Signup = () => {
                                 <div className="absolute top-0 z-[1] h-full w-full rounded-[16px] checkout-imgbox-overlay"></div>
                               </div>
                               {/* Image 11 */}
-                              <div className="planText relative h-20 w-20 flex-shrink-0 rounded-2xl">
+                              <div className=" relative h-20 w-20 flex-shrink-0 rounded-2xl">
                                 <img
                                   alt="img"
                                   loading="lazy"
@@ -387,40 +403,6 @@ const Signup = () => {
                               </svg>
                               <p className="text-darkbrown left-4 text-sm font-semibold ">
                                 Access To Our Grounds Community
-                              </p>
-                            </div>
-                            <div className="my-2 flex items-center gap-2 px-6">
-                              <svg
-                                width="14"
-                                height="14"
-                                viewBox="0 0 14 14"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <path
-                                  d="M6.13029 0.532554C6.51349 -0.142704 7.48651 -0.142704 7.86971 0.532554L9.76013 3.86372C9.84925 4.02076 9.97923 4.15075 10.1363 4.23987L13.4674 6.13029C14.1427 6.51349 14.1427 7.48651 13.4674 7.86971L10.1363 9.76013C9.97923 9.84925 9.84925 9.97924 9.76013 10.1363L7.86971 13.4674C7.48651 14.1427 6.51349 14.1427 6.13029 13.4674L4.23987 10.1363C4.15075 9.97924 4.02076 9.84925 3.86372 9.76013L0.532554 7.86971C-0.142704 7.48651 -0.142704 6.51349 0.532553 6.13029L3.86372 4.23987C4.02076 4.15075 4.15075 4.02076 4.23987 3.86372L6.13029 0.532554Z"
-                                  fill="#8FB69F"
-                                />
-                              </svg>
-                              <p className="text-darkbrown left-4 text-sm font-semibold">
-                                Access To All Trainers Programs
-                              </p>
-                            </div>
-                            <div className="my-2 flex items-center gap-2 px-6">
-                              <svg
-                                width="14"
-                                height="14"
-                                viewBox="0 0 14 14"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <path
-                                  d="M6.13029 0.532554C6.51349 -0.142704 7.48651 -0.142704 7.86971 0.532554L9.76013 3.86372C9.84925 4.02076 9.97923 4.15075 10.1363 4.23987L13.4674 6.13029C14.1427 6.51349 14.1427 7.48651 13.4674 7.86971L10.1363 9.76013C9.97923 9.84925 9.84925 9.97924 9.76013 10.1363L7.86971 13.4674C7.48651 14.1427 6.51349 14.1427 6.13029 13.4674L4.23987 10.1363C4.15075 9.97924 4.02076 9.84925 3.86372 9.76013L0.532554 7.86971C-0.142704 7.48651 -0.142704 6.51349 0.532553 6.13029L3.86372 4.23987C4.02076 4.15075 4.15075 4.02076 4.23987 3.86372L6.13029 0.532554Z"
-                                  fill="#8FB69F"
-                                />
-                              </svg>
-                              <p className="text-darkbrown left-4 text-sm font-semibold">
-                                Access To All Trainers Programs
                               </p>
                             </div>
                           </>
@@ -487,7 +469,7 @@ const Signup = () => {
                             {/* Images Section */}
                             <div className="no-scrollbar mb-5 flex items-center gap-1 overflow-scroll px-6">
                               {/* Image 1 */}
-                              <div className="planText relative h-20 w-20 flex-shrink-0 rounded-2xl">
+                              <div className=" relative h-20 w-20 flex-shrink-0 rounded-2xl">
                                 <img
                                   alt="img"
                                   loading="lazy"
@@ -501,7 +483,7 @@ const Signup = () => {
                                 <div className="absolute top-0 z-[1] h-full w-full rounded-2xl"></div>
                               </div>
                               {/* Image 2 */}
-                              <div className="planText relative h-20 w-20 flex-shrink-0 rounded-2xl">
+                              <div className=" relative h-20 w-20 flex-shrink-0 rounded-2xl">
                                 <img
                                   alt="img"
                                   loading="lazy"
@@ -515,7 +497,7 @@ const Signup = () => {
                                 <div className="absolute top-0 z-[1] h-full w-full rounded-2xl"></div>
                               </div>
                               {/* Image 3 */}
-                              <div className="planText relative h-20 w-20 flex-shrink-0 rounded-2xl">
+                              <div className="relative h-20 w-20 flex-shrink-0 rounded-2xl">
                                 <img
                                   alt="img"
                                   loading="lazy"
@@ -529,7 +511,7 @@ const Signup = () => {
                                 <div className="absolute top-0 z-[1] h-full w-full rounded-2xl"></div>
                               </div>
                               {/* Image 4 */}
-                              <div className="planText relative h-20 w-20 flex-shrink-0 rounded-2xl">
+                              <div className="relative h-20 w-20 flex-shrink-0 rounded-2xl">
                                 <img
                                   alt="img"
                                   loading="lazy"
@@ -543,7 +525,7 @@ const Signup = () => {
                                 <div className="absolute top-0 z-[1] h-full w-full rounded-2xl"></div>
                               </div>
                               {/* Image 5 */}
-                              <div className="planText relative h-20 w-20 flex-shrink-0 rounded-2xl">
+                              <div className="relative h-20 w-20 flex-shrink-0 rounded-2xl">
                                 <img
                                   alt="img"
                                   loading="lazy"
@@ -557,7 +539,7 @@ const Signup = () => {
                                 <div className="absolute top-0 z-[1] h-full w-full rounded-2xl"></div>
                               </div>
                               {/* Image 6 */}
-                              <div className="planText relative h-20 w-20 flex-shrink-0 rounded-2xl">
+                              <div className=" relative h-20 w-20 flex-shrink-0 rounded-2xl">
                                 <img
                                   alt="img"
                                   loading="lazy"
@@ -574,7 +556,7 @@ const Signup = () => {
                                 <div className="absolute top-0 z-[1] h-full w-full rounded-[16px] checkout-imgbox-overlay"></div>
                               </div>
                               {/* Image 7 */}
-                              <div className="planText relative h-20 w-20 flex-shrink-0 rounded-2xl">
+                              <div className="relative h-20 w-20 flex-shrink-0 rounded-2xl">
                                 <img
                                   alt="img"
                                   loading="lazy"
@@ -591,7 +573,7 @@ const Signup = () => {
                                 <div className="absolute top-0 z-[1] h-full w-full rounded-[16px] checkout-imgbox-overlay"></div>
                               </div>
                               {/* Image 8 */}
-                              <div className="planText relative h-20 w-20 flex-shrink-0 rounded-2xl">
+                              <div className="relative h-20 w-20 flex-shrink-0 rounded-2xl">
                                 <img
                                   alt="img"
                                   loading="lazy"
@@ -608,7 +590,7 @@ const Signup = () => {
                                 <div className="absolute top-0 z-[1] h-full w-full rounded-[16px] checkout-imgbox-overlay"></div>
                               </div>
                               {/* Image 9 */}
-                              <div className="planText relative h-20 w-20 flex-shrink-0 rounded-2xl">
+                              <div className="relative h-20 w-20 flex-shrink-0 rounded-2xl">
                                 <img
                                   alt="img"
                                   loading="lazy"
@@ -625,7 +607,7 @@ const Signup = () => {
                                 <div className="absolute top-0 z-[1] h-full w-full rounded-[16px] checkout-imgbox-overlay"></div>
                               </div>
                               {/* Image 10 */}
-                              <div className="planText relative h-20 w-20 flex-shrink-0 rounded-2xl">
+                              <div className=" relative h-20 w-20 flex-shrink-0 rounded-2xl">
                                 <img
                                   alt="img"
                                   loading="lazy"
@@ -642,7 +624,7 @@ const Signup = () => {
                                 <div className="absolute top-0 z-[1] h-full w-full rounded-[16px] checkout-imgbox-overlay"></div>
                               </div>
                               {/* Image 11 */}
-                              <div className="planText relative h-20 w-20 flex-shrink-0 rounded-2xl">
+                              <div className="relative h-20 w-20 flex-shrink-0 rounded-2xl">
                                 <img
                                   alt="img"
                                   loading="lazy"
@@ -726,23 +708,6 @@ const Signup = () => {
                               </svg>
                               <p className="text-darkbrown left-4 text-sm font-semibold ">
                                 Access To Our Grounds Community
-                              </p>
-                            </div>
-                            <div className="my-2 flex items-center gap-2 px-6">
-                              <svg
-                                width="14"
-                                height="14"
-                                viewBox="0 0 14 14"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <path
-                                  d="M6.13029 0.532554C6.51349 -0.142704 7.48651 -0.142704 7.86971 0.532554L9.76013 3.86372C9.84925 4.02076 9.97923 4.15075 10.1363 4.23987L13.4674 6.13029C14.1427 6.51349 14.1427 7.48651 13.4674 7.86971L10.1363 9.76013C9.97923 9.84925 9.84925 9.97924 9.76013 10.1363L7.86971 13.4674C7.48651 14.1427 6.51349 14.1427 6.13029 13.4674L4.23987 10.1363C4.15075 9.97924 4.02076 9.84925 3.86372 9.76013L0.532554 7.86971C-0.142704 7.48651 -0.142704 6.51349 0.532553 6.13029L3.86372 4.23987C4.02076 4.15075 4.15075 4.02076 4.23987 3.86372L6.13029 0.532554Z"
-                                  fill="#8FB69F"
-                                />
-                              </svg>
-                              <p className="text-darkbrown left-4 text-sm font-semibold">
-                                Access To All Trainers Programs
                               </p>
                             </div>
                           </>
@@ -832,14 +797,14 @@ const Signup = () => {
                     </p>
                   </div>
                 </div>
-                <div className="px-[18%] relative">
+                <div className="px-[18%] relative mob:px-[6%]">
                   <div className="relative z-[100] flex h-14 cursor-pointer items-center justify-center overflow-hidden rounded-3xl bg-lightgreen font-medium text-primary mt-11  w-full text-base hover:bg-brown ">
                     <span className="relative z-10">
                       Continue To Create Account
                     </span>
                     <span className="absolute left-0 top-0 z-0 h-[1px] w-[1px] translate-x-[-50%] translate-y-[-50%] rounded-[50%] bg-transparent"></span>
                   </div>
-                  <p className="mt-5 text-center text-xs font-light leading-5">
+                  <p className="mt-5 text-center text-xs font-light leading-5 mob:pb-6">
                     At the end of your free trial your subscription will
                     automatically
                     <br />
@@ -862,11 +827,13 @@ const Signup = () => {
             </div>
           </div>
         </div>
-
         {/* For Mobile */}
-        <div className="relative block w-[60%]">
+        <div className="relative block w-[60%] mob:w-full lg:w-[60%] tab:w-full">
           <div className="absolute left-5 top-5 hidden tab:block mob:block">
-            <div className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-xl border-[3px] border-darkbrown border-opacity-[0.1]">
+            <div
+              className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-xl border-[3px] border-darkbrown border-opacity-[0.1]"
+              onClick={handleLoginClick}
+            >
               <svg
                 width="16"
                 height="13"
@@ -892,10 +859,16 @@ const Signup = () => {
             </div>
           </div>
           <div className="absolute right-14 top-9 flex items-center  gap-4 mob:hidden">
-            <div className="relative z-[100] text-primary cursor-pointer overflow-hidden flex h-11 w-24 items-center justify-center rounded-3xl text-base font-medium ">
-              <span className="relative z-10">Home</span>
+            <div
+              className="relative z-[100] text-primary cursor-pointer overflow-hidden flex h-11 w-24 items-center justify-center rounded-3xl text-base font-medium "
+              onClick={handleHomeClick}
+            >
+              <span className="relative z-10 tab:hidden mob:hidden">Home</span>
             </div>
-            <div className="relative z-[100] cursor-pointer overflow-hidden flex h-11 w-24 items-center justify-center rounded-3xl bg-primary text-base font-medium hover:bg-darkbrown  hover:text-primary mob:hidden">
+            <div
+              className="relative z-[100] cursor-pointer overflow-hidden flex h-11 w-24 items-center justify-center rounded-3xl bg-primary text-base font-medium hover:bg-darkbrown  hover:text-primary mob:hidden tab:hidden"
+              onClick={handleLoginClick}
+            >
               <button className="relative z-10"> Login</button>
             </div>
           </div>
@@ -905,11 +878,11 @@ const Signup = () => {
             height="4096"
             decoding="async"
             data-nimg="1"
-            className="h-screen w-full object-cover rounded-tl-[40px] mob:h-[400px] tab:h-[82vh] mob:rounded-none tab:rounded-none"
+            className="h-screen w-full object-cover rounded-tl-[40px] mob:h-[400px] tab:h-[40vh] mob:rounded-none tab:rounded-none"
             src={Image}
           />
-          <div className="absolute left-[50%] top-[50%] -mt-14  w-full translate-x-[-50%] translate-y-[-50%]">
-            <h1 className="text-center text-5xl font-extrabold leading-[64px] text-primary">
+          <div className="absolute left-[50%] top-[50%] -mt-14 mob:mt-0 w-full translate-x-[-50%] translate-y-[-50%]">
+            <h1 className="text-center text-5xl font-extrabold leading-[64px] text-primary mob:text-3xl tab:text-3xl">
               Start Your 7-Day
               <br />
               <span className="relative flex flex-col items-center">
@@ -920,6 +893,7 @@ const Signup = () => {
                   viewBox="0 0 274 11"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
+                  className="mob:w-[200px] tab:w-[220px] w-"
                 >
                   <path
                     d="M1 9C11.123 5.34032 79.6952 -0.881146 273 3.51047"
@@ -929,7 +903,7 @@ const Signup = () => {
                 </svg>
               </span>
             </h1>
-            <p className="mt-6 text-center text-base font-light leading-6 text-primary">
+            <p className="mt-6 text-center text-base font-light leading-6 text-primary mob:flex mob:flex-col mob:text-sm tab:flex tab:flex-col tab:text-sm">
               Register now for the Grounds app and get
               <span className="font-semibold"> INSTANT ACCESS!</span>
             </p>
