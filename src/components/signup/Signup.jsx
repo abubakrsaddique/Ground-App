@@ -26,6 +26,9 @@ const Signup = () => {
   const handleHomeClick = () => {
     navigate("/");
   };
+  const handleStartUpClick = () => {
+    navigate("/startup");
+  };
 
   const handleCardClick = (cardNumber) => {
     if (selectedCard === cardNumber) {
@@ -799,7 +802,10 @@ const Signup = () => {
                 </div>
                 <div className="px-[18%] relative mob:px-[6%]">
                   <div className="relative z-[100] flex h-14 cursor-pointer items-center justify-center overflow-hidden rounded-3xl bg-lightgreen font-medium text-primary mt-11  w-full text-base hover:bg-brown ">
-                    <span className="relative z-10">
+                    <span
+                      className="relative z-10"
+                      onClick={handleStartUpClick}
+                    >
                       Continue To Create Account
                     </span>
                     <span className="absolute left-0 top-0 z-0 h-[1px] w-[1px] translate-x-[-50%] translate-y-[-50%] rounded-[50%] bg-transparent"></span>
