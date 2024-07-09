@@ -1,6 +1,8 @@
 import React, { useState } from "react";
+import { firestore, auth } from "../../Firebase";
 
-const EditProfile = ({ onClose }) => {
+const EditProfile = ({ onClose, userUid }) => {
+  const [age, setAge] = useState("");
   const [lengthUnit, setLengthUnit] = useState("cm");
   const [weightUnit, setWeightUnit] = useState("kg");
   const [selectedGoal, setSelectedGoal] = useState("");
@@ -70,12 +72,44 @@ const EditProfile = ({ onClose }) => {
     setSelectedMeal(meal);
   };
 
+  const user = auth.currentUser;
+  if (!user) {
+    console.error("User is not authenticated.");
+    return;
+  }
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    const profileData = {
+      age,
+      lengthUnit,
+      weightUnit,
+      selectedGoal,
+      selectedMeal,
+    };
+
+    try {
+      const userUid = user.uid;
+      const profileRef = firestore
+        .collection("users")
+        .doc(userUid)
+        .collection("profiledata");
+
+      await profileRef.add(profileData);
+
+      onClose();
+    } catch (error) {
+      console.error("Error saving profile data: ", error);
+    }
+  };
+
   return (
     <div className="bg-black w-screen top-0 fixed right-0 h-screen z-50 bg-opacity-50">
       <div className="fixed top-0 right-0 h-full overflow-y-auto no-scrollbar max-w-md bg-darkgray rounded-tl-3xl rounded-bl-3xl z-50 p-5">
         <div className="w-full px-5 pb-5">
           <div className="h-full w-full flex items-center ">
-            <form className="w-full">
+            <form className="w-full" onSubmit={handleSubmit}>
               <div className="flex justify-end w-full">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -102,6 +136,8 @@ const EditProfile = ({ onClose }) => {
                 type="number"
                 min="0"
                 placeholder="Age"
+                value={age}
+                onChange={(e) => setAge(e.target.value)}
                 className="mb-3 w-full rounded-3xl px-6 py-4 text-sm font-medium leading-4 outline-black remove-arrow"
               />
 

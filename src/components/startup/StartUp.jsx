@@ -102,11 +102,6 @@ const StartUp = () => {
         expiry,
         cvc,
       });
-      await userRef.collection("Payment").add({
-        cardNumber,
-        expiry,
-        cvc,
-      });
 
       setLoading(false);
       navigate("/dashboard");
