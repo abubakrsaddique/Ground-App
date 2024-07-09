@@ -87,7 +87,7 @@ const Signup = () => {
                 <p className=" text-[18px] font-normal leading-4 text-lightbrown mt-12 w-[70%] mx-auto mob:mx-8">
                   Already have an account?
                   <span
-                    className="cursor-pointer  font-medium text-lightgreen underline"
+                    className="cursor-pointer  font-medium text-lightgreen underline "
                     onClick={handleLoginClick}
                   >
                     Log In
@@ -801,7 +801,7 @@ const Signup = () => {
                   </div>
                 </div>
                 <div className="px-[18%] relative mob:px-[6%]">
-                  <div className="relative z-[100] flex h-14 cursor-pointer items-center justify-center overflow-hidden rounded-3xl bg-lightgreen font-medium text-primary mt-11  w-full text-base hover:bg-brown ">
+                  <div className="relative z-[100] flex h-14 cursor-pointer items-center justify-center overflow-hidden rounded-3xl bg-lightgreen font-medium text-primary mt-11  w-full text-base hover:bg-brown transition-colors duration-500">
                     <span
                       className="relative z-10"
                       onClick={handleStartUpClick}
@@ -872,7 +872,7 @@ const Signup = () => {
               <span className="relative z-10 tab:hidden mob:hidden">Home</span>
             </div>
             <div
-              className="relative z-[100] cursor-pointer overflow-hidden flex h-11 w-24 items-center justify-center rounded-3xl bg-primary text-base font-medium hover:bg-darkbrown  hover:text-primary mob:hidden tab:hidden"
+              className="relative z-[100] cursor-pointer overflow-hidden flex h-11 w-24 items-center justify-center rounded-3xl bg-primary text-base font-medium  hover:text-primary mob:hidden tab:hidden hover:bg-brown"
               onClick={handleLoginClick}
             >
               <button className="relative z-10"> Login</button>

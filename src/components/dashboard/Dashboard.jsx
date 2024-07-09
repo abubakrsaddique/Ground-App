@@ -25,9 +25,9 @@ const Testing = () => {
     setIsOpen(false);
   };
   return (
-    <div className="min-h-screen bg-gray w-full">
+    <div className="min-h-screen bg-gray w-full mob:no-scrollbar">
       {/* Navbar */}
-      <div className="flex items-center justify-between  px-40 py-11">
+      <div className="flex items-center justify-between  px-40 py-11 mob:px-4 mob:py-8 tab:px-4 tab:py-8  ">
         <p className="text-darkbrown font-bold leading-10 text-[38px]">
           Grounds
         </p>
@@ -36,11 +36,11 @@ const Testing = () => {
         </p>
       </div>
       {/* Main Conatainer */}
-      <div className="mx-auto max-w-[60rem] px-5">
+      <div className="mx-auto max-w-[60rem] px-5 ">
         {/* Profile Picture */}
         <div className="mb-20 mt-5">
-          <div className="flex items-center justify-between flex-row">
-            <div className="flex  items-center gap-6 flex-row">
+          <div className="flex items-center justify-between flex-row mob:flex-col tab:flex-col">
+            <div className="flex  items-center gap-6 flex-row mob:flex-col tab:flex-col">
               <div className="relative flex h-24 w-24 cursor-pointer items-center justify-center rounded-full ">
                 <img
                   alt="ProfileImage"
@@ -54,7 +54,7 @@ const Testing = () => {
                 />
               </div>
               <svg
-                className="ml-[-49px] mt-[68px] z-[100] cursor-pointer"
+                className="ml-[-49px] mt-[68px] cursor-pointer mob:ml-[69px] mob:mt-[-48px] tab:ml-[70px] tab:mt-[-48px]"
                 xmlns="http://www.w3.org/2000/svg"
                 width="25"
                 height="24"
@@ -287,9 +287,9 @@ const Testing = () => {
           </div>
         </div>
         {/* Account Detail  */}
-        <div className="flex flex-row gap-8 w-full">
+        <div className="flex flex-row gap-8 w-full mob:flex-col tab:flex-col ">
           {/* Left Side */}
-          <div className="w-[50%] flex flex-shrink-0 flex-col">
+          <div className="w-[50%] flex flex-shrink-0 flex-col mob:w-full tab:w-full">
             {/* Email $ Password */}
             <div>
               <div className="flex items-center justify-between">
@@ -313,6 +313,7 @@ const Testing = () => {
                 </svg>
                 {isOpen && <MyAccount onClose={handleClose} />}
               </div>
+
               <div className="mt-4 bg-primary rounded-3xl p-6">
                 <div className="flex items-center justify-between mb-4">
                   <p className="text-base font-semibold">Email</p>
@@ -405,7 +406,7 @@ const Testing = () => {
             </div>
           </div>
           {/* Right Side */}
-          <div className="w-[50%] flex-shrink-0 flex flex-col">
+          <div className="w-[50%] flex-shrink-0 flex flex-col mob:w-full mob:pb-10 mob:-mt-10 tab:w-full tab:pb-10 tab:-mt-10">
             {/* My plan */}
             <div>
               <div class="flex items-center justify-between">
@@ -450,6 +451,7 @@ const Testing = () => {
                   viewBox="0 0 48 48"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
+                  className="w-[116px] h-[64px]"
                 >
                   <rect width="48" height="48" rx="20" fill="#E68B85" />
                   <path
