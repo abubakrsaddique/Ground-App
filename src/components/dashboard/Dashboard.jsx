@@ -1,4 +1,6 @@
-import React, { useState, useContext } from "react";
+import React, { useEffect, useState, useContext } from "react";
+import { getAuth } from "firebase/auth";
+import { getFirestore, doc, getDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import AddImage from "../../images/addimage.webp";
@@ -12,6 +14,26 @@ const Testing = () => {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
   const { logout, isLoggedIn } = useContext(AuthContext);
+  const [firstName, setFirstName] = useState("");
+  const [email, setEmail] = useState("");
+  const auth = getAuth();
+  const db = getFirestore();
+  const user = auth.currentUser;
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (user) {
+        const userDoc = await getDoc(doc(db, "users", user.uid));
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          setFirstName(userData.firstName);
+          setEmail(user.email);
+        }
+      }
+    };
+
+    fetchUserData();
+  }, [user, db]);
 
   const handleGroundClick = () => {
     if (isLoggedIn) {
@@ -93,8 +115,9 @@ const Testing = () => {
               {isProfileImageOpen && (
                 <ProfileImage onClose={toggleProfileImage} />
               )}
+
               <p className="text-xl font-semibold leading-7 text-brown">
-                Welcome
+                Welcome , {firstName}
               </p>
             </div>
             <div className="flex flex-col justify-center">
@@ -341,7 +364,7 @@ const Testing = () => {
                 <div className="flex items-center justify-between mb-4">
                   <p className="text-base font-semibold">Email</p>
                   <p className="text-base font-semibold text-lightbrown">
-                    abubakar@gmail.com
+                    {email}
                   </p>
                 </div>
                 <div className="border-t border-gray my-4"></div>
