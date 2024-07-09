@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { FaSpinner } from "react-icons/fa";
 import Image from "../../images/login.webp";
 import Image1 from "../../images/image1.webp";
 import Image2 from "../../images/image2.webp";
@@ -18,6 +19,7 @@ const Signup = () => {
   const [selectedTrainer, setSelectedTrainer] = useState(null);
   const [selectedCard, setSelectedCard] = useState(1);
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   const handleLoginClick = () => {
     navigate("/login");
@@ -27,7 +29,21 @@ const Signup = () => {
     navigate("/");
   };
   const handleStartUpClick = () => {
-    navigate("/startup");
+    if (selectedTrainer) {
+      setLoading(true);
+
+      setTimeout(() => {
+        setLoading(false);
+
+        navigate("/startup");
+        console.log(
+          "Navigating to startup page with trainer:",
+          selectedTrainer
+        );
+      }, 2000);
+    } else {
+      alert("Please select a trainer before proceeding.");
+    }
   };
 
   const handleCardClick = (cardNumber) => {
@@ -801,13 +817,19 @@ const Signup = () => {
                   </div>
                 </div>
                 <div className="px-[18%] relative mob:px-[6%]">
-                  <div className="relative z-[100] flex h-14 cursor-pointer items-center justify-center overflow-hidden rounded-3xl bg-lightgreen font-medium text-primary mt-11  w-full text-base hover:bg-brown transition-colors duration-500">
-                    <span
-                      className="relative z-10"
-                      onClick={handleStartUpClick}
-                    >
-                      Continue To Create Account
-                    </span>
+                  <div
+                    className="relative z-[100] flex h-14 cursor-pointer items-center justify-center overflow-hidden rounded-3xl bg-lightgreen font-medium text-primary mt-11  w-full text-base hover:bg-brown transition-colors duration-500"
+                    onClick={handleStartUpClick}
+                  >
+                    <div className="flex justify-center items-center">
+                      {loading ? (
+                        <FaSpinner className="animate-spin" />
+                      ) : (
+                        <span className="relative z-10">
+                          Continue To Create Account
+                        </span>
+                      )}
+                    </div>
                     <span className="absolute left-0 top-0 z-0 h-[1px] w-[1px] translate-x-[-50%] translate-y-[-50%] rounded-[50%] bg-transparent"></span>
                   </div>
                   <p className="mt-5 text-center text-xs font-light leading-5 mob:pb-6">

@@ -1,9 +1,44 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { auth } from "../../Firebase";
+import { FaSpinner } from "react-icons/fa";
 import Image from "../../images/login.webp";
 
 const Login = () => {
   const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+
+    if (!validateEmail(email)) {
+      setError("The email address is badly formatted.");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      await auth.signInWithEmailAndPassword(email, password);
+      setLoading(false);
+      navigate("/dashboard");
+    } catch (error) {
+      console.error("Login Error:", error);
+      setError(
+        "Failed to log in. Please check your credentials and try again."
+      );
+      setLoading(false);
+    }
+  };
+
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
 
   const handleHomeClick = () => {
     navigate("/");
@@ -16,26 +51,35 @@ const Login = () => {
     <div className="min-h-screen w-full  bg-gray">
       <div className="flex flex-row mob:flex-col-reverse tab:flex-col-reverse">
         <div className=" relative w-[70%] mob:w-full tab:w-full tab:mt-14">
-          <div className="flex h-full w-full  items-center justify-center py-6 ">
-            <form className="flex flex-col">
+          <div className="flex h-full w-full items-center justify-center py-6">
+            <form className="flex flex-col" onSubmit={handleLogin}>
               <p className="mb-8 text-3xl font-bold text-darkbrown">Login</p>
               <input
                 required
                 type="email"
                 placeholder="Email"
                 name="email"
-                className="mb-3 w-[400px] rounded-3xl px-6 py-4 text-sm font-medium leading-4 outline-black mob:w-[350px] "
+                className="mb-3 w-[400px] rounded-3xl px-6 py-4 text-sm font-medium leading-4 outline-black mob:w-[350px]"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
               <input
                 required
                 type="password"
                 placeholder="Password"
                 name="password"
-                className="mb-3 w-[400px] rounded-3xl px-6 py-4 text-sm font-medium leading-4 outline-black mob:w-[350px] "
+                className="mb-3 w-[400px] rounded-3xl px-6 py-4 text-sm font-medium leading-4 outline-black mob:w-[350px]"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
               <p className="text-darkbrown mt-2 w-fit text-sm font-medium leading-5 underline cursor-pointer">
                 <a>Forgot password?</a>
               </p>
+              {error && (
+                <p className="text-sm text-lightbrown mt-4 flex justify-center items-center">
+                  {error}
+                </p>
+              )}
               <p className="mt-10 text-center text-sm font-medium text-lightbrown">
                 You don’t have an account?{" "}
                 <span
@@ -45,9 +89,13 @@ const Login = () => {
                   Sign Up
                 </span>
               </p>
-              <button type="submit" className="mt-4">
+              <button type="submit" className="mt-4" disabled={loading}>
                 <div className="relative z-[100] flex h-14 cursor-pointer items-center justify-center overflow-hidden rounded-3xl font-medium text-primary w-full bg-darkbrown text-base hover:bg-lightgreen mob:w-[350px]">
-                  <span className="relative z-10"> Login</span>
+                  {loading ? (
+                    <FaSpinner className="animate-spin" />
+                  ) : (
+                    <span className="relative z-10">Login</span>
+                  )}
                 </div>
               </button>
             </form>

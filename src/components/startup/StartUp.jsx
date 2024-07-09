@@ -1,14 +1,23 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Image from "../../images/login.webp";
-import { CardElement } from "@stripe/react-stripe-js";
-import { Elements } from "@stripe/react-stripe-js";
+import { auth, firestore } from "../../Firebase";
+import { FaSpinner } from "react-icons/fa";
 import { loadStripe } from "@stripe/stripe-js";
+import Image from "../../images/login.webp";
 
 const stripePromise = loadStripe("your_publishable_key_here");
 
 const StartUp = () => {
   const navigate = useNavigate();
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [cardNumber, setCardNumber] = useState("");
+  const [expiry, setExpiry] = useState("");
+  const [cvc, setCvc] = useState("");
+  const [error, setError] = useState("");
 
   const handleLoginClick = () => {
     navigate("/login");
@@ -17,12 +26,103 @@ const StartUp = () => {
   const handleHomeClick = () => {
     navigate("/");
   };
+
   const handleSignupClick = () => {
     navigate("/signup");
   };
 
-  const handleDashboardClick = () => {
-    navigate("/dashboard");
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    switch (name) {
+      case "cardNumber":
+        if (/^\d{0,16}$/.test(value)) {
+          setCardNumber(value);
+        }
+        break;
+      case "expiry":
+        if (value.length <= 5) {
+          setExpiry(value);
+        }
+        break;
+      case "cvc":
+        if (/^\d{0,3}$/.test(value)) {
+          setCvc(value);
+        }
+        break;
+      default:
+        break;
+    }
+  };
+
+  const handleDashboardClick = async (event) => {
+    event.preventDefault();
+    setLoading(true);
+
+    if (cardNumber.length !== 16) {
+      setError("Card number must be 16 digits.");
+      setLoading(false);
+      return;
+    }
+
+    if (!/^(0[1-9]|1[0-2])\/([0-9]{2})$/.test(expiry)) {
+      setError("Expiry date must be in MM/YY format.");
+      setLoading(false);
+      return;
+    }
+
+    if (cvc.length !== 3) {
+      setError("CVC must be 3 digits.");
+      setLoading(false);
+      return;
+    }
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters.");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const userCredential = await auth.createUserWithEmailAndPassword(
+        email,
+        password
+      );
+
+      const userRef = firestore
+        .collection("users")
+        .doc(userCredential.user.uid);
+
+      await userRef.set({
+        firstName,
+        lastName,
+        email,
+      });
+
+      await userRef.collection("Payment").add({
+        cardNumber,
+        expiry,
+        cvc,
+      });
+      await userRef.collection("Payment").add({
+        cardNumber,
+        expiry,
+        cvc,
+      });
+
+      setLoading(false);
+      navigate("/dashboard");
+
+      setFirstName("");
+      setLastName("");
+      setEmail("");
+      setPassword("");
+      setCardNumber("");
+      setExpiry("");
+      setCvc("");
+    } catch (error) {
+      console.error("Error signing up:", error);
+      setError("Failed to sign up. Please check your details and try again.");
+      setLoading(false);
+    }
   };
 
   return (
@@ -80,7 +180,10 @@ const StartUp = () => {
                   </p>
 
                   <div className="mt-8 flex flex-col gap-4">
-                    <form className="flex relative flex-col">
+                    <form
+                      className="flex relative flex-col"
+                      onSubmit={handleDashboardClick}
+                    >
                       <div className="mb-2 mt-0 flex items-center gap-2">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -103,28 +206,36 @@ const StartUp = () => {
                         type="text"
                         placeholder="First Name"
                         name="firstName"
-                        className="mb-3   rounded-[24px] px-6 py-4 text-sm font-normal leading-4 outline-black"
+                        className="mb-3 w-[400px] rounded-3xl px-6 py-4 text-sm font-medium leading-4 outline-black mob:w-[350px]"
+                        value={firstName}
+                        onChange={(e) => setFirstName(e.target.value)}
                       />
                       <input
                         required
                         type="text"
                         placeholder="Last Name"
                         name="lastName"
-                        className="mb-3 rounded-[24px] px-6 py-4 text-sm textsm font-normal leading-4 outline-black"
+                        className="mb-3 w-[400px] rounded-3xl px-6 py-4 text-sm font-medium leading-4 outline-black mob:w-[350px]"
+                        value={lastName}
+                        onChange={(e) => setLastName(e.target.value)}
                       />
                       <input
                         required
                         type="email"
                         placeholder="Email"
                         name="email"
-                        className="mb-3  rounded-[24px] px-6 py-4 text-sm font-normal leading-4 outline-black"
+                        className="mb-3 w-[400px] rounded-3xl px-6 py-4 text-sm font-medium leading-4 outline-black mob:w-[350px]"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                       />
                       <input
                         required
                         type="password"
                         placeholder="Password"
                         name="password"
-                        className="mb-3  rounded-[24px] px-6 py-4 text-sm font-normal leading-4 outline-black"
+                        className="mb-3 w-[400px] rounded-3xl px-6 py-4 text-sm font-medium leading-4 outline-black mob:w-[350px]"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
                       />
                       <div className="mb-4 mt-8 flex items-center justify-between gap-0">
                         <p className="text-dark-brown z-10 ml-[-35px] flex items-center gap-2 text-[20px] font-semibold leading-8 mob:ml-0 mob:text-[18px]">
@@ -150,56 +261,42 @@ const StartUp = () => {
                         </p>
                       </div>
                       <div className="w-full">
-                        <div className="StripeElement StripeElement--empty">
-                          <div className="__PrivateStripeElement bg-primary rounded-[24px]">
-                            <iframe
-                              title="Secure card number input frame"
-                              className="w-full h-12 mb-3  px-6 py-4 text-sm font-normal leading-4 "
-                              src="https://js.stripe.com/v3/elements-inner-card-9e3eee81c2f9ef77a590521873066c15.html#wait=false&mids[guid]=5ddf529f-3d92-4f61-b088-e91c61964050906249&mids[muid]=5b9fab89-56eb-4275-8a7a-845bc038495fe52fef&mids[sid]=46f45f73-8284-4fbd-9781-93a1c4b32eda101387&style[base][fontSize]=16px&style[base][::placeholder][fontSize]=14px&style[invalid][color]=%23fa755a&style[invalid][iconColor]=%23fa755a&rtl=false&componentName=cardNumber&keyMode=live&apiKey=pk_live_51NMI2fHtltLmP0gjgHL93omOe4o7c7Zq8G0W0bjD2Ec0vSIPd85DyeXK5l0JW6jlb1QsLnwXkv7zfoNgT8wnGnCz00XQudmSlu&referrer=https%3A%2F%2Fwww.groundsapp.co%2Fcheckout&controllerId=__privateStripeController8591"
-                              style={{ border: "none" }}
-                              allow="payment *"
-                              allowtransparency="true"
-                              scrolling="no"
-                              frameBorder="0"
-                            ></iframe>
-                          </div>
-                        </div>
+                        <input
+                          required
+                          type="text"
+                          placeholder="Card Number"
+                          name="cardNumber"
+                          className="mb-3 rounded-lg px-4 py-2 w-full outline-black"
+                          value={cardNumber}
+                          onChange={handleInputChange}
+                        />
                       </div>
 
                       <div className="flex space-x-4">
-                        <div className="w-full">
-                          <div className="StripeElement StripeElement--empty">
-                            <div className="__PrivateStripeElement bg-primary rounded-[24px]">
-                              <iframe
-                                title="Secure expiration date input frame"
-                                className="w-full h-12 px-6 py-4 text-sm font-normal leading-4"
-                                src="https://js.stripe.com/v3/elements-inner-card-9e3eee81c2f9ef77a590521873066c15.html#wait=false&mids[guid]=5ddf529f-3d92-4f61-b088-e91c61964050906249&mids[muid]=5b9fab89-56eb-4275-8a7a-845bc038495fe52fef&mids[sid]=46f45f73-8284-4fbd-9781-93a1c4b32eda101387&style[base][fontSize]=16px&style[base][::placeholder][fontSize]=14px&style[invalid][color]=%23fa755a&style[invalid][iconColor]=%23fa755a&rtl=false&componentName=cardExpiry&keyMode=live&apiKey=pk_live_51NMI2fHtltLmP0gjgHL93omOe4o7c7Zq8G0W0bjD2Ec0vSIPd85DyeXK5l0JW6jlb1QsLnwXkv7zfoNgT8wnGnCz00XQudmSlu&referrer=https%3A%2F%2Fwww.groundsapp.co%2Fcheckout&controllerId=__privateStripeController8591"
-                                allow="payment *"
-                                allowtransparency="true"
-                                scrolling="no"
-                                frameBorder="0"
-                              ></iframe>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="w-full">
-                          <div className="StripeElement StripeElement--empty">
-                            <div className="__PrivateStripeElement bg-primary rounded-[24px]">
-                              <iframe
-                                title="Secure CVC input frame"
-                                className="w-full h-12 px-6 py-4 text-sm font-normal leading-4"
-                                src="https://js.stripe.com/v3/elements-inner-card-9e3eee81c2f9ef77a590521873066c15.html#wait=false&mids[guid]=5ddf529f-3d92-4f61-b088-e91c61964050906249&mids[muid]=5b9fab89-56eb-4275-8a7a-845bc038495fe52fef&mids[sid]=46f45f73-8284-4fbd-9781-93a1c4b32eda101387&style[base][fontSize]=16px&style[base][::placeholder][fontSize]=14px&style[invalid][color]=%23fa755a&style[invalid][iconColor]=%23fa755a&rtl=false&componentName=cardCvc&keyMode=live&apiKey=pk_live_51NMI2fHtltLmP0gjgHL93omOe4o7c7Zq8G0W0bjD2Ec0vSIPd85DyeXK5l0JW6jlb1QsLnwXkv7zfoNgT8wnGnCz00XQudmSlu&referrer=https%3A%2F%2Fwww.groundsapp.co%2Fcheckout&controllerId=__privateStripeController8591"
-                                style={{ border: "none" }}
-                                allow="payment *"
-                                allowtransparency="true"
-                                scrolling="no"
-                                frameBorder="0"
-                              ></iframe>
-                            </div>
-                          </div>
-                        </div>
+                        <input
+                          required
+                          type="text"
+                          placeholder="Expiry Date (MM/YY)"
+                          name="expiry"
+                          className="mb-3 rounded-lg px-4 py-2 w-full outline-black"
+                          value={expiry}
+                          onChange={handleInputChange}
+                        />
+                        <input
+                          required
+                          type="text"
+                          placeholder="CVC"
+                          name="cvc"
+                          className="mb-3 rounded-lg px-4 py-2 w-full outline-black"
+                          value={cvc}
+                          onChange={handleInputChange}
+                        />
                       </div>
-
+                      {error && (
+                        <p className="text-sm text-red-500 mt-4 flex justify-center items-center">
+                          {error}
+                        </p>
+                      )}
                       <p className="mb-10 mt-8 block text-sm font-normal leading-5 text-lightbrown mob:hidden">
                         Already have an account?{" "}
                         <a>
@@ -212,11 +309,12 @@ const StartUp = () => {
                         </a>
                       </p>
                       <div className="relative z-[100] flex h-14 cursor-pointer items-center justify-center overflow-hidden rounded-3xl bg-lightgreen font-medium text-primary w-full text-base hover:bg-brown ">
-                        <button
-                          className="relative z-10"
-                          onClick={handleDashboardClick}
-                        >
-                          Start Your Journey
+                        <button type="submit" className=" " disabled={loading}>
+                          {loading ? (
+                            <FaSpinner className="animate-spin mx-auto" />
+                          ) : (
+                            "Start Your Journey"
+                          )}
                         </button>
                         <span className="absolute left-0 top-0 z-0 h-[1px] w-[1px] translate-x-[-50%] translate-y-[-50%] rounded-[50%] bg-transparent"></span>
                       </div>

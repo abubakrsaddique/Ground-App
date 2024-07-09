@@ -1,12 +1,15 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect, useContext } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import BackgroundVideo from "../../images/banner.mp4";
 import Close from "../../images/close.png";
+import { AuthContext } from "../../context/AuthContext";
 
 const Banner = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
+  const { isLoggedIn } = useContext(AuthContext);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const toggleModal = () => {
     setModalOpen(!modalOpen);
@@ -16,12 +19,30 @@ const Banner = () => {
     setMenuOpen(!menuOpen);
   };
 
-  const handleLoginClick = () => {
-    navigate("/login");
-  };
   const handleSignupClick = () => {
     navigate("/signup");
   };
+
+  useEffect(() => {
+    if (location.state && location.state.fromDashboard) {
+      setIsModalOpen(true);
+    }
+  }, [location.state]);
+
+  const handleGroundClick = () => {
+    if (isLoggedIn) {
+      navigate("/banner", { state: { fromDashboard: true } });
+    }
+  };
+
+  const handleLoginClick = () => {
+    if (isLoggedIn) {
+      navigate("/dashboard");
+    } else {
+      navigate("/login");
+    }
+  };
+
   return (
     <div className="relative h-full min-h-screen w-full bg-gray py-10">
       <video
@@ -160,9 +181,12 @@ const Banner = () => {
       {/* Main Screen */}
       <div className="relative top-0 h-full w-full  px-28 ">
         {/* Nav_Bar */}
-        <nav className=" flex relative mob:hidden tab:hidden rounded-[77px] w-full h-[74px] items-center justify-between px-[50px] bg-gray  py-4  ">
+        <nav className="flex relative mob:hidden tab:hidden rounded-[77px] w-full h-[74px] items-center justify-between px-[50px] bg-gray py-4">
           <div>
-            <p className="text-3xl font-bold leading-[45px]  text-darkbrown">
+            <p
+              className="text-3xl font-bold leading-[45px] text-darkbrown"
+              onClick={handleGroundClick}
+            >
               GROUNDS
             </p>
           </div>
@@ -189,11 +213,12 @@ const Banner = () => {
             onClick={handleLoginClick}
           >
             <span className="relative z-10 text-primary text-base font-semi-bold leading-6">
-              Login
+              {isLoggedIn ? "Dashboard" : "Login"}
             </span>
           </div>
         </nav>
         {/* For Mobile */}
+
         <div className="absolute top-0 left-0 right-0 mob:flex tab:flex w-full items-center justify-between px-5  hidden">
           <p className="text-3xl font-bold leading-none text-primary">
             GROUNDS

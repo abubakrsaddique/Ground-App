@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../context/AuthContext";
 import AddImage from "../../images/addimage.webp";
 import MyAccount from "./MyAccount";
 import ProfileImage from "./ProfileImage";
@@ -8,6 +10,21 @@ const Testing = () => {
   const [isProfileImageOpen, setIsProfileImageOpen] = useState(false);
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
+  const { logout, isLoggedIn } = useContext(AuthContext);
+
+  const handleGroundClick = () => {
+    if (isLoggedIn) {
+      navigate("/", { state: { isLoggedIn } });
+    } else {
+      navigate("/");
+    }
+  };
+
+  const handleLogoutClick = () => {
+    logout();
+    navigate("/");
+  };
 
   const toggleProfileImage = () => {
     setIsProfileImageOpen(!isProfileImageOpen);
@@ -28,10 +45,16 @@ const Testing = () => {
     <div className="min-h-screen bg-gray w-full mob:no-scrollbar">
       {/* Navbar */}
       <div className="flex items-center justify-between  px-40 py-11 mob:px-4 mob:py-8 tab:px-4 tab:py-8  ">
-        <p className="text-darkbrown font-bold leading-10 text-[38px]">
+        <p
+          className="text-darkbrown font-bold leading-10 text-[38px] cursor-pointer"
+          onClick={handleGroundClick}
+        >
           Grounds
         </p>
-        <p className="cursor-pointer text-base font-semibold leading-5 text-black">
+        <p
+          className="cursor-pointer text-base font-semibold leading-5 text-black"
+          onClick={handleLogoutClick}
+        >
           Log out
         </p>
       </div>
