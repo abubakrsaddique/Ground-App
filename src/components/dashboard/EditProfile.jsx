@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { firestore, auth } from "../../Firebase";
+import { FaSpinner } from "react-icons/fa";
 
 const EditProfile = ({ onClose, userUid }) => {
+  const [loading, setLoading] = useState(false);
   const [age, setAge] = useState("");
   const [lengthUnit, setLengthUnit] = useState("cm");
   const [weightUnit, setWeightUnit] = useState("kg");
@@ -81,6 +83,8 @@ const EditProfile = ({ onClose, userUid }) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+    setLoading(true);
+
     const profileData = {
       age,
       lengthUnit,
@@ -98,12 +102,14 @@ const EditProfile = ({ onClose, userUid }) => {
 
       await profileRef.add(profileData);
 
+      setLoading(false);
+
       onClose();
     } catch (error) {
       console.error("Error saving profile data: ", error);
+      setLoading(false);
     }
   };
-
   return (
     <div className="bg-black w-screen top-0 fixed right-0 h-screen z-50 bg-opacity-50">
       <div className="fixed top-0 right-0 h-full overflow-y-auto no-scrollbar max-w-md bg-darkgray rounded-tl-3xl rounded-bl-3xl z-50 p-5">
@@ -365,8 +371,13 @@ const EditProfile = ({ onClose, userUid }) => {
               <button
                 type="submit"
                 className="mt-10 flex h-14 w-full items-center justify-center rounded-3xl bg-darkbrown text-lg font-medium text-primary"
+                disabled={loading}
               >
-                Save Changes
+                {loading ? (
+                  <FaSpinner className="animate-spin mx-auto" />
+                ) : (
+                  "Save Changes"
+                )}
               </button>
             </form>
           </div>
