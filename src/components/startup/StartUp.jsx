@@ -21,6 +21,10 @@ const StartUp = () => {
     navigate("/signup");
   };
 
+  const handleDashboardClick = () => {
+    navigate("/dashboard");
+  };
+
   return (
     <div className="min-h-screen w-full  bg-gray">
       <div className="flex flex-row mob:flex-col-reverse tab:flex-col-reverse">
@@ -57,7 +61,7 @@ const StartUp = () => {
               </div>
               <div>
                 <div className="relative pl-5 w-[70%] mx-auto mob:w-[90%] mob:pl-0">
-                  <div className="absolute left-0 top-8 h-full border border-dashed border-lightgreen mob:hidden"></div>
+                  <div className="absolute left-0 top-8 h-[90%] border border-dashed border-lightgreen mob:hidden"></div>
                   <p className="text-darkbrown -ml-9 mt-10 flex items-center gap-2 text-2xl font-bold mob:-ml-1 mob:text-xl">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -207,14 +211,19 @@ const StartUp = () => {
                           </span>
                         </a>
                       </p>
+                      <div className="relative z-[100] flex h-14 cursor-pointer items-center justify-center overflow-hidden rounded-3xl bg-lightgreen font-medium text-primary w-full text-base hover:bg-brown ">
+                        <button
+                          className="relative z-10"
+                          onClick={handleDashboardClick}
+                        >
+                          Start Your Journey
+                        </button>
+                        <span className="absolute left-0 top-0 z-0 h-[1px] w-[1px] translate-x-[-50%] translate-y-[-50%] rounded-[50%] bg-transparent"></span>
+                      </div>
                     </form>
                   </div>
                 </div>
                 <div className="px-[18%] -mt-10 relative mob:px-[6%]">
-                  <div className="relative z-[100] flex h-14 cursor-pointer items-center justify-center overflow-hidden rounded-3xl bg-lightgreen font-medium text-primary mt-11  w-full text-base hover:bg-brown ">
-                    <span className="relative z-10">Start Your Journey</span>
-                    <span className="absolute left-0 top-0 z-0 h-[1px] w-[1px] translate-x-[-50%] translate-y-[-50%] rounded-[50%] bg-transparent"></span>
-                  </div>
                   <p className="mt-5 text-center text-xs font-light leading-5 mob:pb-6">
                     At the end of your free trial your subscription will
                     automatically

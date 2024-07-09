@@ -9,6 +9,7 @@ module.exports = {
       brown: "#302A25",
       lightbrown: "rgb(169 164 161)",
       darkbrown: "#302A25",
+      darkgray: "#F2EEE6",
       red: "rgb(239 68 68)",
       gray: "#F2EEE6",
       "custom-hsla1": "hsla(40, 32%, 93%, 0)",
