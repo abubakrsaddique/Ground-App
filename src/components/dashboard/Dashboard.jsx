@@ -3,6 +3,7 @@ import { getAuth } from "firebase/auth";
 import { firestore } from "../../Firebase";
 import { getFirestore, doc, getDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
+import { firebase } from "../../Firebase";
 import { AuthContext } from "../../context/AuthContext";
 import AddImage from "../../images/addimage.webp";
 import MyAccount from "./MyAccount";
@@ -12,6 +13,7 @@ import EditProfile from "./EditProfile";
 const Dashboard = () => {
   const [isProfileImageOpen, setIsProfileImageOpen] = useState(false);
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
+  const [profileImageUrl, setProfileImageUrl] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
   const { logout, isLoggedIn } = useContext(AuthContext);
@@ -68,6 +70,29 @@ const Dashboard = () => {
 
     fetchProfileData();
   }, [user, db]);
+
+  useEffect(() => {
+    const fetchProfileImage = async () => {
+      const currentUser = firebase.auth().currentUser;
+      if (currentUser) {
+        const userRef = firebase
+          .firestore()
+          .collection("users")
+          .doc(currentUser.uid);
+        const userDoc = await userRef.get();
+        if (userDoc.exists) {
+          const userData = userDoc.data();
+          if (userData && userData.profileImageUrl) {
+            setProfileImageUrl(userData.profileImageUrl);
+          } else {
+            setProfileImageUrl(AddImage);
+          }
+        }
+      }
+    };
+
+    fetchProfileImage();
+  }, []);
 
   const handleGroundClick = () => {
     if (isLoggedIn) {
@@ -128,12 +153,12 @@ const Dashboard = () => {
                   height="96"
                   decoding="async"
                   className="h-24 w-24 rounded-full object-cover"
-                  src={AddImage}
+                  src={profileImageUrl || AddImage}
                   onClick={toggleProfileImage}
                 />
               </div>
               <svg
-                className="ml-[-49px] mt-[68px] cursor-pointer mob:ml-[69px] mob:mt-[-48px] tab:ml-[70px] tab:mt-[-48px]"
+                className="ml-[-49px] mt-[68px] z-[1] cursor-pointer mob:ml-[69px] mob:mt-[-48px] tab:ml-[70px] tab:mt-[-48px]"
                 xmlns="http://www.w3.org/2000/svg"
                 width="25"
                 height="24"

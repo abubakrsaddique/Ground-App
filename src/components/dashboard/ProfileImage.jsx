@@ -4,7 +4,6 @@ import "firebase/compat/auth";
 import "firebase/compat/firestore";
 import "firebase/compat/storage";
 import { FaSpinner } from "react-icons/fa";
-
 import Close from "../../images/close.png";
 
 const ProfileImage = ({ onClose }) => {
@@ -28,6 +27,7 @@ const ProfileImage = ({ onClose }) => {
 
   const handleSave = () => {
     if (selectedImage) {
+      setLoading(true);
       const storageRef = firebase.storage().ref();
       const imageRef = storageRef.child(
         `profile_images/${firebase.auth().currentUser.uid}/${
@@ -39,22 +39,27 @@ const ProfileImage = ({ onClose }) => {
         .put(selectedImage)
         .then((snapshot) => {
           console.log("Image uploaded successfully:", snapshot);
-          return snapshot.ref.getDownloadURL(); // Get the download URL
+          return snapshot.ref.getDownloadURL();
         })
         .then((downloadURL) => {
-          // Store the downloadURL in Firestore
           const userId = firebase.auth().currentUser.uid;
-          return firestore.collection("users").doc(userId).update({
+          const userRef = firebase.firestore().collection("users").doc(userId);
+
+          return userRef.update({
             profileImageUrl: downloadURL,
           });
         })
         .then(() => {
           console.log("Profile image URL saved successfully");
-          // Optionally update state or trigger a re-render
+          setSuccessMessage("Profile image saved successfully");
+          setLoading(false);
+          setSelectedImage(null);
+          setPreviewUrl(null);
         })
         .catch((error) => {
           console.error("Error uploading image:", error);
-          // Handle error (e.g., show error message to user)
+          setErrorMessage("Failed to save profile image");
+          setLoading(false);
         });
     }
   };
@@ -141,7 +146,7 @@ const ProfileImage = ({ onClose }) => {
                 <button
                   onClick={handleSave}
                   className="bg-brown flex justify-center items-center rounded-full w-[47%] h-14 mb-3 mt-6 py-3 cursor-pointer text-primary font-semibold text-base leading-6"
-                  disabled={!selectedImage}
+                  disabled={!selectedImage || loading}
                 >
                   {loading ? (
                     <FaSpinner className="animate-spin mr-2" />
