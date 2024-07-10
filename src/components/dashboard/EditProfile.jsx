@@ -151,7 +151,7 @@ const EditProfile = ({ onClose, userUid, profileData }) => {
   return (
     <div className="bg-black w-screen top-0 fixed right-0 h-screen z-50 bg-opacity-50">
       <div className="fixed top-0 right-0 h-full overflow-y-auto no-scrollbar max-w-md bg-darkgray rounded-tl-3xl rounded-bl-3xl z-50 p-5">
-        <div className="w-full px-5 pb-5">
+        <div className="w-full px-5 pb-5 mob:pl-12 mob:pr-1">
           <div className="h-full w-full flex items-center ">
             <form className="w-full" onSubmit={handleSubmit}>
               <div className="flex justify-end w-full">

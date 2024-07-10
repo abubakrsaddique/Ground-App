@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import "firebase/compat/firestore";
@@ -12,6 +12,24 @@ const ProfileImage = ({ onClose }) => {
   const [loading, setLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [currentImageUrl, setCurrentImageUrl] = useState(null);
+
+  useEffect(() => {
+    const fetchProfileImage = async () => {
+      const userId = firebase.auth().currentUser.uid;
+      const userRef = firebase.firestore().collection("users").doc(userId);
+      const userDoc = await userRef.get();
+
+      if (userDoc.exists) {
+        const userData = userDoc.data();
+        if (userData && userData.profileImageUrl) {
+          setCurrentImageUrl(userData.profileImageUrl);
+        }
+      }
+    };
+
+    fetchProfileImage();
+  }, []);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -37,10 +55,7 @@ const ProfileImage = ({ onClose }) => {
 
       imageRef
         .put(selectedImage)
-        .then((snapshot) => {
-          console.log("Image uploaded successfully:", snapshot);
-          return snapshot.ref.getDownloadURL();
-        })
+        .then((snapshot) => snapshot.ref.getDownloadURL())
         .then((downloadURL) => {
           const userId = firebase.auth().currentUser.uid;
           const userRef = firebase.firestore().collection("users").doc(userId);
@@ -50,7 +65,7 @@ const ProfileImage = ({ onClose }) => {
           });
         })
         .then(() => {
-          console.log("Profile image URL saved successfully");
+          console.log("Profile image URL updated successfully");
           setSuccessMessage("Profile image saved successfully");
           setLoading(false);
           setSelectedImage(null);
@@ -96,6 +111,12 @@ const ProfileImage = ({ onClose }) => {
                   <img
                     src={previewUrl}
                     alt="Preview"
+                    className="max-h-[100%] max-w-[100%] object-cover"
+                  />
+                ) : currentImageUrl ? (
+                  <img
+                    src={currentImageUrl}
+                    alt="Current"
                     className="max-h-[100%] max-w-[100%] object-cover"
                   />
                 ) : (

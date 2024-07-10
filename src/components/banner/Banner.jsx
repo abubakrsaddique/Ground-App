@@ -31,7 +31,7 @@ const Banner = () => {
 
   const handleGroundClick = () => {
     if (isLoggedIn) {
-      navigate("/banner", { state: { fromDashboard: true } });
+      navigate("/dashboard", { state: { fromDashboard: true } });
     }
   };
 
@@ -184,13 +184,13 @@ const Banner = () => {
         <nav className="flex relative mob:hidden tab:hidden rounded-[77px] w-full h-[74px] items-center justify-between px-[50px] bg-gray py-4">
           <div>
             <p
-              className="text-3xl font-bold leading-[45px] text-darkbrown"
+              className="text-3xl font-bold leading-[45px] text-darkbrown cursor-pointer"
               onClick={handleGroundClick}
             >
               GROUNDS
             </p>
           </div>
-          <div className="flex justify-center items-center">
+          <div className="flex justify-center items-center cursor-pointer">
             <a className="z-[10] mr-9 text-base font-medium leading-6 text-darkbrown">
               Home
             </a>
@@ -220,7 +220,7 @@ const Banner = () => {
         {/* For Mobile */}
 
         <div className="absolute top-0 left-0 right-0 mob:flex tab:flex w-full items-center justify-between px-5  hidden">
-          <p className="text-3xl font-bold leading-none text-primary">
+          <p className="text-3xl font-bold leading-none text-primary cursor-pointer">
             GROUNDS
           </p>
           <button onClick={toggleMenu}>
@@ -303,7 +303,7 @@ const Banner = () => {
           </div>
           <div className="mt-16 h-full w-full bg-gray">
             <div className="px-5">
-              <div className="flex flex-col gap-8">
+              <div className="flex flex-col gap-8 cursor-pointer">
                 <span className="text-2xl font-semibold leading-7 text-darkbrown">
                   Home
                 </span>
@@ -322,10 +322,10 @@ const Banner = () => {
               </div>
 
               <div
-                className="mt-12 flex h-[56px] w-full items-center text-primary justify-center rounded-3xl bg-darkbrown text-xl font-bold leading-6 "
+                className="mt-12 flex h-[56px] w-full items-center text-primary justify-center rounded-3xl bg-darkbrown text-xl font-bold leading-6"
                 onClick={handleSignupClick}
               >
-                Get Started
+                {isLoggedIn ? "Dashboard" : "Get Started"}
               </div>
 
               <p
@@ -641,8 +641,13 @@ const Banner = () => {
               </span>
             </p>
             <div>
-              <div className="relative  bg-lightgreen text-sm leading-6 text-primary font-medium z-[100] flex w-[225px] py-4 rounded-3xl mt-12 cursor-pointer items-center justify-center mob:mt-8  tab:mt-8">
-                <span className="relative z-10">Start Your Free Trial</span>
+              <div className="relative  bg-lightgreen text-sm leading-6  text-primary font-medium z-[100] flex w-[225px] py-4 rounded-3xl mt-12 cursor-pointer items-center justify-center mob:mt-8  tab:mt-8">
+                <span
+                  className="relative z-10 cursor-pointer"
+                  onClick={handleSignupClick}
+                >
+                  Start Your Free Trial
+                </span>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"

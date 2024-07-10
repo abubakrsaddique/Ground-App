@@ -200,7 +200,7 @@ const StartUp = () => {
                         type="text"
                         placeholder="First Name"
                         name="firstName"
-                        className="mb-3 w-[400px] rounded-3xl px-6 py-4 text-sm font-medium leading-4 outline-black mob:w-[350px]"
+                        className="mb-3  rounded-3xl px-6 py-4 text-sm font-medium leading-4 outline-black mob:w-[350px]"
                         value={firstName}
                         onChange={(e) => setFirstName(e.target.value)}
                       />
@@ -209,7 +209,7 @@ const StartUp = () => {
                         type="text"
                         placeholder="Last Name"
                         name="lastName"
-                        className="mb-3 w-[400px] rounded-3xl px-6 py-4 text-sm font-medium leading-4 outline-black mob:w-[350px]"
+                        className="mb-3  rounded-3xl px-6 py-4 text-sm font-medium leading-4 outline-black mob:w-[350px]"
                         value={lastName}
                         onChange={(e) => setLastName(e.target.value)}
                       />
@@ -218,7 +218,7 @@ const StartUp = () => {
                         type="email"
                         placeholder="Email"
                         name="email"
-                        className="mb-3 w-[400px] rounded-3xl px-6 py-4 text-sm font-medium leading-4 outline-black mob:w-[350px]"
+                        className="mb-3  rounded-3xl px-6 py-4 text-sm font-medium leading-4 outline-black mob:w-[350px]"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                       />
@@ -227,7 +227,7 @@ const StartUp = () => {
                         type="password"
                         placeholder="Password"
                         name="password"
-                        className="mb-3 w-[400px] rounded-3xl px-6 py-4 text-sm font-medium leading-4 outline-black mob:w-[350px]"
+                        className="mb-3  rounded-3xl px-6 py-4 text-sm font-medium leading-4 outline-black mob:w-[350px]"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                       />
@@ -260,7 +260,7 @@ const StartUp = () => {
                           type="text"
                           placeholder="Card Number"
                           name="cardNumber"
-                          className="mb-3 rounded-lg px-4 py-2 w-full outline-black"
+                          className="mb-3 rounded-3xl px-4 py-2 w-full outline-black"
                           value={cardNumber}
                           onChange={handleInputChange}
                         />
@@ -270,9 +270,9 @@ const StartUp = () => {
                         <input
                           required
                           type="text"
-                          placeholder="Expiry Date (MM/YY)"
+                          placeholder=" (MM/YY)"
                           name="expiry"
-                          className="mb-3 rounded-lg px-4 py-2 w-full outline-black"
+                          className="mb-3 rounded-3xl px-4 py-2 w-full outline-black"
                           value={expiry}
                           onChange={handleInputChange}
                         />
@@ -281,7 +281,7 @@ const StartUp = () => {
                           type="text"
                           placeholder="CVC"
                           name="cvc"
-                          className="mb-3 rounded-lg px-4 py-2 w-full outline-black"
+                          className="mb-3 rounded-3xl px-4 py-2 w-full outline-black"
                           value={cvc}
                           onChange={handleInputChange}
                         />
@@ -316,7 +316,7 @@ const StartUp = () => {
                   </div>
                 </div>
                 <div className="px-[18%] -mt-10 relative mob:px-[6%]">
-                  <p className="mt-5 text-center text-xs font-light leading-5 mob:pb-6">
+                  <p className="mt-12 text-center text-xs font-light leading-5 mob:pb-6">
                     At the end of your free trial your subscription will
                     automatically
                     <br />
