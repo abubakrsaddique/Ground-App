@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import { getAuth } from "firebase/auth";
+import { firestore } from "../../Firebase";
 import { getFirestore, doc, getDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
@@ -17,6 +18,7 @@ const Dashboard = () => {
   const auth = getAuth();
   const db = getFirestore();
   const user = auth.currentUser;
+  const [loading, setLoading] = useState(true);
   const [firstName, setFirstName] = useState("");
   const [email, setEmail] = useState("");
   const [profileData, setProfileData] = useState({
@@ -47,20 +49,12 @@ const Dashboard = () => {
     const fetchProfileData = async () => {
       if (user) {
         try {
-          const userDocRef = doc(db, "users", user.uid);
-          const userDocSnap = await getDoc(userDocRef);
+          const userDocRef = firestore.collection("users").doc(user.uid);
+          const userDocSnap = await userDocRef.get();
 
-          if (userDocSnap.exists()) {
+          if (userDocSnap.exists) {
             const userData = userDocSnap.data();
-            const userProfileData = userData.profileData || {};
-
-            setProfileData({
-              age: userProfileData.age || "",
-              height: userProfileData.height || "",
-              weight: userProfileData.weight || "",
-              selectedGoal: userProfileData.selectedGoal || "",
-              selectedMeal: userProfileData.selectedMeal || "",
-            });
+            setProfileData(userData.profileData || {});
           } else {
             console.log("No such document!");
           }
@@ -417,80 +411,85 @@ const Dashboard = () => {
               </div>
             </div>
             {/* Profile Detail */}
-            <div className="mt-8"></div>
-            <div className="pb-12">
-              <div className="flex items-center justify-between">
-                <h2 className="pl-1.5 text-2xl font-semibold leading-6">
-                  My Profile
-                </h2>
-                <svg
-                  onClick={toggleEditProfile}
-                  className="cursor-pointer
-                  "
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <circle cx="12" cy="12" r="12" fill="#8FB69F" />
-                  <path
-                    d="M10.88 8.86293L14.415 12.3984L10.8285 15.9854C10.6625 16.1514 10.4434 16.2537 10.2095 16.2744L10.1215 16.2779H7.505C7.38059 16.2779 7.26055 16.232 7.16791 16.149C7.07527 16.0659 7.01655 15.9516 7.003 15.8279L7 15.7729V13.1564C7.00006 12.9217 7.08272 12.6944 7.2335 12.5144L7.2935 12.4494L10.88 8.86293ZM12.45 7.29293C12.627 7.11596 12.8638 7.01177 13.1139 7.00094C13.3639 6.99011 13.6089 7.07342 13.8005 7.23443L13.864 7.29293L15.9855 9.41443C16.1623 9.59136 16.2664 9.82814 16.2773 10.0781C16.2881 10.328 16.2049 10.5729 16.044 10.7644L15.9855 10.8284L15.1225 11.6914L11.5875 8.15593L12.45 7.29293Z"
-                    fill="white"
-                  />
-                </svg>
-                {isEditProfileOpen && (
-                  <EditProfile onClose={toggleEditProfile} />
-                )}
-              </div>
-              <div className="mt-4 w-full rounded-3xl bg-primary p-6">
-                <div className="flex flex-wrap items-center justify-between">
-                  <p className="font-semibold leading-4 text-black text-base">
-                    Age
-                  </p>
-                  <p className="font-semibold leading-4 text-lightbrown text-base">
-                    {profileData.age}
-                  </p>
+            <div className="mt-8">
+              <div className="pb-12">
+                <div className="flex items-center justify-between">
+                  <h2 className="pl-1.5 text-2xl font-semibold leading-6">
+                    My Profile
+                  </h2>
+                  <svg
+                    onClick={toggleEditProfile}
+                    className="cursor-pointer"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <circle cx="12" cy="12" r="12" fill="#8FB69F" />
+                    <path
+                      d="M10.88 8.86293L14.415 12.3984L10.8285 15.9854C10.6625 16.1514 10.4434 16.2537 10.2095 16.2744L10.1215 16.2779H7.505C7.38059 16.2779 7.26055 16.232 7.16791 16.149C7.07527 16.0659 7.01655 15.9516 7.003 15.8279L7 15.7729V13.1564C7.00006 12.9217 7.08272 12.6944 7.2335 12.5144L7.2935 12.4494L10.88 8.86293ZM12.45 7.29293C12.627 7.11596 12.8638 7.01177 13.1139 7.00094C13.3639 6.99011 13.6089 7.07342 13.8005 7.23443L13.864 7.29293L15.9855 9.41443C16.1623 9.59136 16.2664 9.82814 16.2773 10.0781C16.2881 10.328 16.2049 10.5729 16.044 10.7644L15.9855 10.8284L15.1225 11.6914L11.5875 8.15593L12.45 7.29293Z"
+                      fill="white"
+                    />
+                  </svg>
+                  {isEditProfileOpen && (
+                    <EditProfile
+                      onClose={toggleEditProfile}
+                      userUid={user.uid}
+                      profileData={profileData}
+                    />
+                  )}
                 </div>
-                <div className="my-5 w-full border-t border-gray opacity-50"></div>
-                <div className="flex flex-wrap items-center justify-between">
-                  <p className=" font-semibold leading-4 text-black text-base">
-                    Height
-                  </p>
-                  <p className="font-semibold leading-4 text-lightbrown text-base">
-                    {profileData.height}
-                  </p>
-                </div>
-                <div className="my-5 w-full border-t border-gray opacity-50"></div>
-                <div className="flex flex-wrap items-center justify-between">
-                  <p className="font-semibold leading-4 text-black text-base">
-                    Weight
-                  </p>
-                  <p className="font-semibold leading-4 text-lightbrown text-base">
-                    {profileData.weight}
-                  </p>
-                </div>
-                <div className="my-5 w-full border-t border-gray opacity-50"></div>
-                <div className="flex flex-wrap items-center justify-between">
-                  <p className="break-all font-semibold leading-4 text-black text-base">
-                    Goals
-                  </p>
-                  <p className="font-semibold leading-4 text-lightbrown text-base">
-                    {profileData.selectedGoal}
-                  </p>
-                </div>
-                <div className="my-5 w-full border-t border-gray opacity-50"></div>
-                <div className="flex flex-wrap items-center justify-between">
-                  <p className="font-semibold leading-4 text-black text-base">
-                    Daily Meal Amount
-                  </p>
-                  <p className="font-semibold leading-4 text-lightbrown text-base">
-                    {profileData.selectedMeal}
-                  </p>
+                <div className="mt-4 w-full rounded-3xl bg-primary p-6">
+                  <div className="flex flex-wrap items-center justify-between">
+                    <p className="font-semibold leading-4 text-black text-base">
+                      Age
+                    </p>
+                    <p className="font-semibold leading-4 text-lightbrown text-base">
+                      {profileData.age || "Not provided"}
+                    </p>
+                  </div>
+                  <div className="my-5 w-full border-t border-gray opacity-50"></div>
+                  <div className="flex flex-wrap items-center justify-between">
+                    <p className="font-semibold leading-4 text-black text-base">
+                      Height
+                    </p>
+                    <p className="font-semibold leading-4 text-lightbrown text-base">
+                      {profileData.height || "Not provided"}
+                    </p>
+                  </div>
+                  <div className="my-5 w-full border-t border-gray opacity-50"></div>
+                  <div className="flex flex-wrap items-center justify-between">
+                    <p className="font-semibold leading-4 text-black text-base">
+                      Weight
+                    </p>
+                    <p className="font-semibold leading-4 text-lightbrown text-base">
+                      {profileData.weight || "Not provided"}
+                    </p>
+                  </div>
+                  <div className="my-5 w-full border-t border-gray opacity-50"></div>
+                  <div className="flex flex-wrap items-center justify-between">
+                    <p className="break-all font-semibold leading-4 text-black text-base">
+                      Goals
+                    </p>
+                    <p className="font-semibold leading-4 text-lightbrown text-base">
+                      {profileData.selectedGoal || "Not provided"}
+                    </p>
+                  </div>
+                  <div className="my-5 w-full border-t border-gray opacity-50"></div>
+                  <div className="flex flex-wrap items-center justify-between">
+                    <p className="font-semibold leading-4 text-black text-base">
+                      Daily Meal Amount
+                    </p>
+                    <p className="font-semibold leading-4 text-lightbrown text-base">
+                      {profileData.selectedMeal || "Not provided"}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
+
           {/* Right Side */}
           <div className="w-[50%] flex-shrink-0 flex flex-col mob:w-full mob:pb-10 mob:-mt-10 tab:w-full tab:pb-10 tab:-mt-10">
             {/* My plan */}
