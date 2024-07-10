@@ -8,22 +8,30 @@ import MyAccount from "./MyAccount";
 import ProfileImage from "./ProfileImage";
 import EditProfile from "./EditProfile";
 
-const Testing = () => {
+const Dashboard = () => {
   const [isProfileImageOpen, setIsProfileImageOpen] = useState(false);
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
   const { logout, isLoggedIn } = useContext(AuthContext);
-  const [firstName, setFirstName] = useState("");
-  const [email, setEmail] = useState("");
   const auth = getAuth();
   const db = getFirestore();
   const user = auth.currentUser;
+  const [firstName, setFirstName] = useState("");
+  const [email, setEmail] = useState("");
+  const [profileData, setProfileData] = useState({
+    age: "",
+    height: "",
+    weight: "",
+    selectedGoal: "",
+    selectedMeal: "",
+  });
 
   useEffect(() => {
     const fetchUserData = async () => {
       if (user) {
         const userDoc = await getDoc(doc(db, "users", user.uid));
+
         if (userDoc.exists()) {
           const userData = userDoc.data();
           setFirstName(userData.firstName);
@@ -33,6 +41,38 @@ const Testing = () => {
     };
 
     fetchUserData();
+  }, [user, db]);
+
+  useEffect(() => {
+    const fetchProfileData = async () => {
+      if (user) {
+        try {
+          const userDocRef = doc(db, "users", user.uid);
+          const userDocSnap = await getDoc(userDocRef);
+
+          if (userDocSnap.exists()) {
+            const userData = userDocSnap.data();
+            const userProfileData = userData.profileData || {};
+
+            setProfileData({
+              age: userProfileData.age || "",
+              height: userProfileData.height || "",
+              weight: userProfileData.weight || "",
+              selectedGoal: userProfileData.selectedGoal || "",
+              selectedMeal: userProfileData.selectedMeal || "",
+            });
+          } else {
+            console.log("No such document!");
+          }
+        } catch (error) {
+          console.error("Error fetching profile data:", error);
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchProfileData();
   }, [user, db]);
 
   const handleGroundClick = () => {
@@ -409,7 +449,7 @@ const Testing = () => {
                     Age
                   </p>
                   <p className="font-semibold leading-4 text-lightbrown text-base">
-                    22
+                    {profileData.age}
                   </p>
                 </div>
                 <div className="my-5 w-full border-t border-gray opacity-50"></div>
@@ -418,7 +458,7 @@ const Testing = () => {
                     Height
                   </p>
                   <p className="font-semibold leading-4 text-lightbrown text-base">
-                    5ft 9in
+                    {profileData.height}
                   </p>
                 </div>
                 <div className="my-5 w-full border-t border-gray opacity-50"></div>
@@ -427,7 +467,7 @@ const Testing = () => {
                     Weight
                   </p>
                   <p className="font-semibold leading-4 text-lightbrown text-base">
-                    74kg
+                    {profileData.weight}
                   </p>
                 </div>
                 <div className="my-5 w-full border-t border-gray opacity-50"></div>
@@ -436,7 +476,7 @@ const Testing = () => {
                     Goals
                   </p>
                   <p className="font-semibold leading-4 text-lightbrown text-base">
-                    Lose Weight
+                    {profileData.selectedGoal}
                   </p>
                 </div>
                 <div className="my-5 w-full border-t border-gray opacity-50"></div>
@@ -445,7 +485,7 @@ const Testing = () => {
                     Daily Meal Amount
                   </p>
                   <p className="font-semibold leading-4 text-lightbrown text-base">
-                    3
+                    {profileData.selectedMeal}
                   </p>
                 </div>
               </div>
@@ -546,4 +586,4 @@ const Testing = () => {
     </div>
   );
 };
-export default Testing;
+export default Dashboard;

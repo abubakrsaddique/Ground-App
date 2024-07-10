@@ -95,12 +95,11 @@ const StartUp = () => {
         firstName,
         lastName,
         email,
-      });
-
-      await userRef.collection("Payment").add({
-        cardNumber,
-        expiry,
-        cvc,
+        payment: {
+          cardNumber,
+          expiry,
+          cvc,
+        },
       });
 
       setLoading(false);

@@ -9,9 +9,10 @@ const EditProfile = ({ onClose, userUid }) => {
   const [weightUnit, setWeightUnit] = useState("kg");
   const [selectedGoal, setSelectedGoal] = useState("");
   const [selectedMeal, setSelectedMeal] = useState("");
-  const [feetValue, setFeetValue] = useState("");
-  const [inchesValue, setInchesValue] = useState("");
+  const [feetInches, setFeetInches] = useState({ feet: "", inches: "" });
   const [cmValue, setCmValue] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const [kgValue, setKgValue] = useState("");
   const [lbsValue, setLbsValue] = useState("");
 
@@ -21,27 +22,17 @@ const EditProfile = ({ onClose, userUid }) => {
     if (unit === "ft" && cmValue !== "") {
       const feet = Math.floor(cmValue / 30.48);
       const inches = ((cmValue / 30.48) % 1) * 12;
-      setFeetValue(feet);
-      setInchesValue(inches.toFixed(2));
+      setFeetInches({ feet: feet, inches: inches.toFixed(2) });
       setCmValue("");
-    } else if (unit === "cm" && feetValue !== "" && inchesValue !== "") {
-      const cm = feetValue * 30.48 + inchesValue * 2.54;
+    } else if (
+      unit === "cm" &&
+      feetInches.feet !== "" &&
+      feetInches.inches !== ""
+    ) {
+      const cm = feetInches.feet * 30.48 + feetInches.inches * 2.54;
       setCmValue(cm.toFixed(2));
-      setFeetValue("");
-      setInchesValue("");
+      setFeetInches({ feet: "", inches: "" });
     }
-  };
-
-  const handleFeetInputChange = (event) => {
-    setFeetValue(event.target.value);
-  };
-
-  const handleInchesInputChange = (event) => {
-    setInchesValue(event.target.value);
-  };
-
-  const handleCmInputChange = (event) => {
-    setCmValue(event.target.value);
   };
 
   const handleWeightUnitChange = (unit) => {
@@ -56,6 +47,18 @@ const EditProfile = ({ onClose, userUid }) => {
       setKgValue(kg.toFixed(2));
       setLbsValue("");
     }
+  };
+
+  const handleFeetInputChange = (e) => {
+    setFeetInches({ ...feetInches, feet: e.target.value });
+  };
+
+  const handleInchesInputChange = (e) => {
+    setFeetInches({ ...feetInches, inches: e.target.value });
+  };
+
+  const handleCmInputChange = (event) => {
+    setCmValue(event.target.value);
   };
 
   const handleKgInputChange = (event) => {
@@ -84,32 +87,42 @@ const EditProfile = ({ onClose, userUid }) => {
     event.preventDefault();
 
     setLoading(true);
+    setSuccessMessage("");
+    setErrorMessage("");
+
+    const { feet, inches } = feetInches;
+    const heightInFeetAndInches = `${feet}'${inches}"`;
 
     const profileData = {
       age,
-      lengthUnit,
-      weightUnit,
+      height: lengthUnit === "cm" ? cmValue : heightInFeetAndInches,
+      weight: weightUnit === "kg" ? kgValue : lbsValue,
       selectedGoal,
       selectedMeal,
     };
 
     try {
       const userUid = user.uid;
-      const profileRef = firestore
-        .collection("users")
-        .doc(userUid)
-        .collection("profiledata");
+      const userRef = firestore.collection("users").doc(userUid);
 
-      await profileRef.add(profileData);
+      await userRef.update({
+        profileData: {
+          ...profileData,
+        },
+      });
 
       setLoading(false);
-
-      onClose();
+      setSuccessMessage("Data saved successfully!");
+      setTimeout(() => {
+        onClose();
+      }, 2000);
     } catch (error) {
       console.error("Error saving profile data: ", error);
       setLoading(false);
+      setErrorMessage("Error saving profile data.");
     }
   };
+
   return (
     <div className="bg-black w-screen top-0 fixed right-0 h-screen z-50 bg-opacity-50">
       <div className="fixed top-0 right-0 h-full overflow-y-auto no-scrollbar max-w-md bg-darkgray rounded-tl-3xl rounded-bl-3xl z-50 p-5">
@@ -155,7 +168,7 @@ const EditProfile = ({ onClose, userUid }) => {
                       name="feet"
                       type="number"
                       placeholder="Feet"
-                      value={feetValue}
+                      value={feetInches.feet}
                       onChange={handleFeetInputChange}
                       className="w-[90px] rounded-3xl px-6 py-4 text-sm font-medium leading-4 outline-black remove-arrow"
                     />
@@ -164,7 +177,7 @@ const EditProfile = ({ onClose, userUid }) => {
                       name="inches"
                       type="number"
                       placeholder="Inches"
-                      value={inchesValue}
+                      value={feetInches.inches}
                       onChange={handleInchesInputChange}
                       className="w-[90px] rounded-3xl px-6 py-4 text-sm font-medium leading-4 outline-black remove-arrow"
                     />
@@ -368,6 +381,12 @@ const EditProfile = ({ onClose, userUid }) => {
                   </div>
                 </div>
               </div>
+              {successMessage && (
+                <div className="text-darkbrown">{successMessage}</div>
+              )}
+              {errorMessage && (
+                <div className="text-lightbrown">{errorMessage}</div>
+              )}
               <button
                 type="submit"
                 className="mt-10 flex h-14 w-full items-center justify-center rounded-3xl bg-darkbrown text-lg font-medium text-primary"
