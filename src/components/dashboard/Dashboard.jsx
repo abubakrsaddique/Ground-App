@@ -20,15 +20,16 @@ const Dashboard = () => {
     userProfileImage,
     setuserProfileImage,
   } = useUser();
+
   const [isProfileImageOpen, setIsProfileImageOpen] = useState(false);
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
   const [profileImageUrl, setProfileImageUrl] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
-  const { logout, isLoggedIn } = useContext(AuthContext);
+  const { logout, isLoggedIn, user } = useContext(AuthContext);
   const auth = getAuth();
   const db = getFirestore();
-  const user = auth.currentUser;
+  // const user = auth.currentUser;
   const [loading, setLoading] = useState(true);
   // const [firstName, setFirstName] = useState("");
   // const [email, setEmail] = useState("");
@@ -43,12 +44,13 @@ const Dashboard = () => {
   const fetchUserData = async () => {
     if (user) {
       try {
-        const userDoc = await getDoc(doc(db, "users", user.uid));
+        const userDoc = await getDoc(doc(firestore, "users", user.uid));
         if (userDoc.exists()) {
           const fetchedData = userDoc.data();
           setUserData(fetchedData);
           setUserEmail(user.email);
           setuserProfileImage(fetchedData.profileImageUrl);
+          setProfileData(fetchedData.profileData);
         }
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -57,34 +59,6 @@ const Dashboard = () => {
       }
     }
   };
-
-  // const fetchProfileImage = async () => {
-  //   const currentUser = firebase.auth().currentUser;
-  //   if (currentUser) {
-  //     const userRef = firebase
-  //       .firestore()
-  //       .collection("users")
-  //       .doc(currentUser.uid);
-  //     const userDoc = await userRef.get();
-  //     if (userDoc.exists) {
-  //       const userData = userDoc.data();
-  //       if (userData && userData.profileImageUrl) {
-  //         setProfileImageUrl(userData.profileImageUrl);
-  //       } else {
-  //         setProfileImageUrl(AddImage);
-  //       }
-  //     }
-  //   }
-  // };
-
-  useEffect(() => {
-    fetchUserData();
-    // fetchProfileImage();
-  }, [user, db]);
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
 
   // const fetchProfileData = async () => {
   //   if (user) {
@@ -106,14 +80,18 @@ const Dashboard = () => {
   //   }
   // };
 
-  // useEffect(() => {
-  //   // fetchProfileData();
-  //   // fetchProfileImage();
-  // }, []);
+  useEffect(() => {
+    fetchUserData();
+    // fetchProfileData();
+  }, [user]);
 
-  // if (loading) {
-  //   return <div>Loading...</div>;
-  // }
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   const handleGroundClick = () => {
     if (isLoggedIn) {
@@ -194,7 +172,10 @@ const Dashboard = () => {
                 />
               </svg>
               {isProfileImageOpen && (
-                <ProfileImage onClose={toggleProfileImage} />
+                <ProfileImage
+                  onClose={toggleProfileImage}
+                  fetchUserData={fetchUserData}
+                />
               )}
 
               <p className="text-xl font-semibold leading-7 text-brown">
@@ -445,7 +426,7 @@ const Dashboard = () => {
                 <div className="flex items-center justify-between mb-4">
                   <p className="text-base font-semibold">Email</p>
                   <p className="text-base font-semibold text-lightbrown">
-                    {userEmail}
+                    {userData?.email}
                   </p>
                 </div>
                 <div className="border-t border-gray my-4"></div>
@@ -484,6 +465,7 @@ const Dashboard = () => {
                       onClose={toggleEditProfile}
                       userUid={user.uid}
                       profileData={profileData}
+                      fetchUserData={fetchUserData}
                     />
                   )}
                 </div>
@@ -536,7 +518,6 @@ const Dashboard = () => {
               </div>
             </div>
           </div>
-
           {/* Right Side */}
           <div className="w-[50%] flex-shrink-0 flex flex-col mob:w-full mob:pb-10 mob:-mt-10 tab:w-full tab:pb-10 tab:-mt-10">
             {/* My plan */}

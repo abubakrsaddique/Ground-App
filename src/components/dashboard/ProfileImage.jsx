@@ -7,7 +7,7 @@ import { FaSpinner } from "react-icons/fa";
 import Close from "../../images/close.png";
 import { useUser } from "../../context/UserContext";
 
-const ProfileImage = ({ onClose }) => {
+const ProfileImage = ({ onClose, fetchUserData }) => {
   const [selectedImage, setSelectedImage] = useState(null);
   const {
     userProfileImage,
@@ -50,7 +50,7 @@ const ProfileImage = ({ onClose }) => {
     }
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (selectedImage) {
       setLoading(true);
       const storageRef = firebase.storage().ref();
@@ -71,9 +71,10 @@ const ProfileImage = ({ onClose }) => {
             profileImageUrl: downloadURL,
           });
         })
-        .then(() => {
+        .then(async () => {
           console.log("Profile image URL updated successfully");
           setSuccessMessage("Profile image saved successfully");
+          await fetchUserData();
           setLoading(false);
           setSelectedImage(null);
           setuserProfilePreview(null);

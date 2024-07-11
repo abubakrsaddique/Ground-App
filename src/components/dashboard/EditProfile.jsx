@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { firestore, auth } from "../../Firebase";
 import { FaSpinner } from "react-icons/fa";
 
-const EditProfile = ({ onClose, userUid, profileData }) => {
+const EditProfile = ({ onClose, userUid, profileData, fetchUserData }) => {
   const [loading, setLoading] = useState(false);
   const [age, setAge] = useState("");
   const [lengthUnit, setLengthUnit] = useState("cm");
@@ -11,6 +11,7 @@ const EditProfile = ({ onClose, userUid, profileData }) => {
   const [selectedMeal, setSelectedMeal] = useState("");
   const [feetInches, setFeetInches] = useState({ feet: "", inches: "" });
   const [cmValue, setCmValue] = useState("");
+  const [height, setHeight] = useState(["", ""]);
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [kgValue, setKgValue] = useState("");
@@ -23,6 +24,7 @@ const EditProfile = ({ onClose, userUid, profileData }) => {
       const feet = Math.floor(cmValue / 30.48);
       const inches = ((cmValue / 30.48) % 1) * 12;
       setFeetInches({ feet: feet, inches: inches.toFixed(2) });
+      setHeight([feet, inches.toFixed(2)]);
       setCmValue("");
     } else if (
       unit === "cm" &&
@@ -31,9 +33,11 @@ const EditProfile = ({ onClose, userUid, profileData }) => {
     ) {
       const cm = feetInches.feet * 30.48 + feetInches.inches * 2.54;
       setCmValue(cm.toFixed(2));
+      setHeight([cm.toFixed(2), null]);
       setFeetInches({ feet: "", inches: "" });
     }
   };
+
   const handleWeightUnitChange = (unit) => {
     setWeightUnit(unit);
 
@@ -50,14 +54,19 @@ const EditProfile = ({ onClose, userUid, profileData }) => {
   const handleFeetInputChange = (e) => {
     const newFeet = e.target.value;
     setFeetInches({ ...feetInches, feet: newFeet });
+    setHeight([newFeet, feetInches.inches]);
   };
 
   const handleInchesInputChange = (e) => {
     const newInches = e.target.value;
     setFeetInches({ ...feetInches, inches: newInches });
+    setHeight([feetInches.feet, newInches]);
   };
+
   const handleCmInputChange = (event) => {
-    setCmValue(event.target.value);
+    const newCmValue = event.target.value;
+    setCmValue(newCmValue);
+    setHeight([newCmValue, null]);
   };
 
   const handleKgInputChange = (event) => {
@@ -89,13 +98,13 @@ const EditProfile = ({ onClose, userUid, profileData }) => {
     setSuccessMessage("");
     setErrorMessage("");
 
-    const { feet, inches } = feetInches;
-    const heightInFeetAndInches = `${feet}'${inches}"`;
+    const formattedHeight = formatHeight();
+    const formattedWeight = formatWeight();
 
     const updatedProfileData = {
       age,
-      height: lengthUnit === "cm" ? cmValue : heightInFeetAndInches,
-      weight: weightUnit === "kg" ? kgValue : lbsValue,
+      height: formattedHeight,
+      weight: formattedWeight,
       selectedGoal,
       selectedMeal,
     };
@@ -109,6 +118,8 @@ const EditProfile = ({ onClose, userUid, profileData }) => {
         },
       });
 
+      await fetchUserData();
+
       setLoading(false);
       setSuccessMessage("Data saved successfully!");
       setTimeout(() => {
@@ -121,28 +132,49 @@ const EditProfile = ({ onClose, userUid, profileData }) => {
     }
   };
 
+  const formatHeight = () => {
+    if (lengthUnit === "ft") {
+      return `${height[0]}ft${height[1]}inch`;
+    } else if (lengthUnit === "cm") {
+      return `${height[0]}cm`;
+    }
+    return "";
+  };
+
+  const formatWeight = () => {
+    if (weightUnit === "kg") {
+      return `${kgValue}kg`;
+    } else if (weightUnit === "lbs") {
+      return `${lbsValue}lbs`;
+    }
+    return "";
+  };
+
   useEffect(() => {
     setAge(profileData.age || "");
     setSelectedGoal(profileData.selectedGoal || "");
     setSelectedMeal(profileData.selectedMeal || "");
     setSelectedMeal(profileData.selectedMeal || "");
     if (profileData.height) {
-      if (profileData.height.includes("'")) {
-        const [feet, inches] = profileData.height.split("'");
+      if (profileData.height.includes("ft")) {
+        const [feet, inchesPart] = profileData.height.split("ft");
+        const inches = inchesPart.split("inch")[0];
         setFeetInches({ feet: feet, inches: inches });
         setLengthUnit("ft");
+        setHeight([feet, inches]);
       } else {
-        setCmValue(profileData.height);
+        setCmValue(profileData.height.replace("cm", ""));
         setLengthUnit("cm");
+        setHeight([profileData.height.replace("cm", ""), null]);
       }
     }
 
     if (profileData.weight) {
       if (profileData.weight.includes("kg")) {
-        setKgValue(profileData.weight);
+        setKgValue(profileData.weight.replace("kg", ""));
         setWeightUnit("kg");
       } else {
-        setLbsValue(profileData.weight);
+        setLbsValue(profileData.weight.replace("lbs", ""));
         setWeightUnit("lbs");
       }
     }

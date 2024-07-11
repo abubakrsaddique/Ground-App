@@ -6,6 +6,7 @@ import { FaSpinner } from "react-icons/fa";
 import { loadStripe } from "@stripe/stripe-js";
 import Image from "../../images/login.webp";
 import { useUser } from "../../context/UserContext";
+import ProfileImage from "../dashboard/ProfileImage";
 
 const stripePromise = loadStripe("your_publishable_key_here");
 
