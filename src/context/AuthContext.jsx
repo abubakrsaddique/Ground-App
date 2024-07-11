@@ -18,12 +18,15 @@ function AuthProvider({ children }) {
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
+      console.log("user", user);
       if (user) {
         localStorage.setItem("user", JSON.stringify(user));
+        setUser(user);
       } else {
         localStorage.removeItem("user");
+        setUser(null);
       }
-      setUser(user);
+      // setUser(user);
       setLoading(false);
     });
 

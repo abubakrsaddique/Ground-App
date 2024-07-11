@@ -9,8 +9,17 @@ import AddImage from "../../images/addimage.webp";
 import MyAccount from "./MyAccount";
 import ProfileImage from "./ProfileImage";
 import EditProfile from "./EditProfile";
+import { useUser } from "../../context/UserContext";
 
 const Dashboard = () => {
+  const {
+    userData,
+    userEmail,
+    setUserData,
+    setUserEmail,
+    userProfileImage,
+    setuserProfileImage,
+  } = useUser();
   const [isProfileImageOpen, setIsProfileImageOpen] = useState(false);
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
   const [profileImageUrl, setProfileImageUrl] = useState(null);
@@ -21,8 +30,8 @@ const Dashboard = () => {
   const db = getFirestore();
   const user = auth.currentUser;
   const [loading, setLoading] = useState(true);
-  const [firstName, setFirstName] = useState("");
-  const [email, setEmail] = useState("");
+  // const [firstName, setFirstName] = useState("");
+  // const [email, setEmail] = useState("");
   const [profileData, setProfileData] = useState({
     age: "",
     height: "",
@@ -31,68 +40,80 @@ const Dashboard = () => {
     selectedMeal: "",
   });
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      if (user) {
+  const fetchUserData = async () => {
+    if (user) {
+      try {
         const userDoc = await getDoc(doc(db, "users", user.uid));
-
         if (userDoc.exists()) {
-          const userData = userDoc.data();
-          setFirstName(userData.firstName);
-          setEmail(user.email);
+          const fetchedData = userDoc.data();
+          setUserData(fetchedData);
+          setUserEmail(user.email);
+          setuserProfileImage(fetchedData.profileImageUrl);
         }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      } finally {
+        setLoading(false);
       }
-    };
+    }
+  };
 
+  // const fetchProfileImage = async () => {
+  //   const currentUser = firebase.auth().currentUser;
+  //   if (currentUser) {
+  //     const userRef = firebase
+  //       .firestore()
+  //       .collection("users")
+  //       .doc(currentUser.uid);
+  //     const userDoc = await userRef.get();
+  //     if (userDoc.exists) {
+  //       const userData = userDoc.data();
+  //       if (userData && userData.profileImageUrl) {
+  //         setProfileImageUrl(userData.profileImageUrl);
+  //       } else {
+  //         setProfileImageUrl(AddImage);
+  //       }
+  //     }
+  //   }
+  // };
+
+  useEffect(() => {
     fetchUserData();
+    // fetchProfileImage();
   }, [user, db]);
 
-  useEffect(() => {
-    const fetchProfileData = async () => {
-      if (user) {
-        try {
-          const userDocRef = firestore.collection("users").doc(user.uid);
-          const userDocSnap = await userDocRef.get();
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
-          if (userDocSnap.exists) {
-            const userData = userDocSnap.data();
-            setProfileData(userData.profileData || {});
-          } else {
-            console.log("No such document!");
-          }
-        } catch (error) {
-          console.error("Error fetching profile data:", error);
-        } finally {
-          setLoading(false);
-        }
-      }
-    };
+  // const fetchProfileData = async () => {
+  //   if (user) {
+  //     try {
+  //       const userDocRef = firestore.collection("users").doc(user.uid);
+  //       const userDocSnap = await userDocRef.get();
 
-    fetchProfileData();
-  }, [user, db]);
+  //       if (userDocSnap.exists) {
+  //         const userData = userDocSnap.data();
+  //         setProfileData(userData.profileData || {});
+  //       } else {
+  //         console.log("No such document!");
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching profile data:", error);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   }
+  // };
 
-  useEffect(() => {
-    const fetchProfileImage = async () => {
-      const currentUser = firebase.auth().currentUser;
-      if (currentUser) {
-        const userRef = firebase
-          .firestore()
-          .collection("users")
-          .doc(currentUser.uid);
-        const userDoc = await userRef.get();
-        if (userDoc.exists) {
-          const userData = userDoc.data();
-          if (userData && userData.profileImageUrl) {
-            setProfileImageUrl(userData.profileImageUrl);
-          } else {
-            setProfileImageUrl(AddImage);
-          }
-        }
-      }
-    };
+  // useEffect(() => {
+  //   // fetchProfileData();
+  //   // fetchProfileImage();
+  // }, []);
 
-    fetchProfileImage();
-  }, []);
+  // if (loading) {
+  //   return <div>Loading...</div>;
+  // }
 
   const handleGroundClick = () => {
     if (isLoggedIn) {
@@ -122,6 +143,7 @@ const Dashboard = () => {
   const handleClose = () => {
     setIsOpen(false);
   };
+
   return (
     <div className="min-h-screen bg-gray w-full mob:no-scrollbar">
       {/* Navbar */}
@@ -153,7 +175,7 @@ const Dashboard = () => {
                   height="96"
                   decoding="async"
                   className="h-24 w-24 rounded-full object-cover"
-                  src={profileImageUrl || AddImage}
+                  src={userProfileImage || AddImage}
                   onClick={toggleProfileImage}
                 />
               </div>
@@ -176,7 +198,7 @@ const Dashboard = () => {
               )}
 
               <p className="text-xl font-semibold leading-7 text-brown">
-                Welcome , {firstName}
+                Welcome , {userData?.firstName}
               </p>
             </div>
             <div className="flex flex-col justify-center">
@@ -423,7 +445,7 @@ const Dashboard = () => {
                 <div className="flex items-center justify-between mb-4">
                   <p className="text-base font-semibold">Email</p>
                   <p className="text-base font-semibold text-lightbrown">
-                    {email}
+                    {userEmail}
                   </p>
                 </div>
                 <div className="border-t border-gray my-4"></div>

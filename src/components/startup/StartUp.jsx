@@ -1,23 +1,28 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import { auth, firestore } from "../../Firebase";
 import { FaSpinner } from "react-icons/fa";
 import { loadStripe } from "@stripe/stripe-js";
 import Image from "../../images/login.webp";
+import { useUser } from "../../context/UserContext";
 
 const stripePromise = loadStripe("your_publishable_key_here");
 
-const StartUp = () => {
+const StartUp = ({ user, db }) => {
   const navigate = useNavigate();
-  const [firstName, setFirstName] = useState("");
+  // const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
+  // const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [cardNumber, setCardNumber] = useState("");
   const [expiry, setExpiry] = useState("");
   const [cvc, setCvc] = useState("");
   const [error, setError] = useState("");
+  const { userData, setUserData, setUserEmail } = useUser();
+  const [firstName, setFirstName] = useState("");
+  const [email, setEmail] = useState("");
 
   const handleLoginClick = () => {
     navigate("/login");
@@ -103,6 +108,7 @@ const StartUp = () => {
       });
 
       setLoading(false);
+      // alert("sucess data stored");
       navigate("/dashboard");
 
       setFirstName("");
@@ -118,6 +124,33 @@ const StartUp = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (userData) {
+      setFirstName(userData.firstName);
+    }
+  }, [userData]);
+
+  const handleSave = async () => {
+    setLoading(true);
+    try {
+      await setDoc(doc(db, "users", user.uid), { firstName });
+      const userDoc = await getDoc(doc(db, "users", user.uid));
+      if (userDoc.exists()) {
+        const updatedData = userDoc.data();
+        setUserData(updatedData);
+        setUserEmail(user.email);
+      }
+    } catch (error) {
+      console.error("Error updating user data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return <div>Saving...</div>;
+  }
 
   return (
     <div className="min-h-screen w-full  bg-gray">
@@ -303,7 +336,12 @@ const StartUp = () => {
                         </a>
                       </p>
                       <div className="relative z-[100] flex h-14 cursor-pointer items-center justify-center overflow-hidden rounded-3xl bg-lightgreen font-medium text-primary w-full text-base hover:bg-brown ">
-                        <button type="submit" className=" " disabled={loading}>
+                        <button
+                          type="submit"
+                          className=" "
+                          disabled={loading}
+                          onClick={handleSave}
+                        >
                           {loading ? (
                             <FaSpinner className="animate-spin mx-auto" />
                           ) : (

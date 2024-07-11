@@ -26,7 +26,7 @@ const MyAccount = ({ onClose }) => {
       if (user) {
         await updatePassword(user, newPassword);
         alert("Password updated successfully!");
-        onClose(); // Close the modal after successful password change
+        onClose();
       }
     } catch (error) {
       setError(error.message);

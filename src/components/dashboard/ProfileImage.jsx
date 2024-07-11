@@ -5,14 +5,21 @@ import "firebase/compat/firestore";
 import "firebase/compat/storage";
 import { FaSpinner } from "react-icons/fa";
 import Close from "../../images/close.png";
+import { useUser } from "../../context/UserContext";
 
 const ProfileImage = ({ onClose }) => {
   const [selectedImage, setSelectedImage] = useState(null);
-  const [previewUrl, setPreviewUrl] = useState(null);
+  const {
+    userProfileImage,
+    setuserProfileImage,
+    userProfilePreview,
+    setuserProfilePreview,
+  } = useUser();
+  // const [previewUrl, setPreviewUrl] = useState(null);
   const [loading, setLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [currentImageUrl, setCurrentImageUrl] = useState(null);
+  // const [currentImageUrl, setCurrentImageUrl] = useState(null);
 
   useEffect(() => {
     const fetchProfileImage = async () => {
@@ -23,7 +30,7 @@ const ProfileImage = ({ onClose }) => {
       if (userDoc.exists) {
         const userData = userDoc.data();
         if (userData && userData.profileImageUrl) {
-          setCurrentImageUrl(userData.profileImageUrl);
+          setuserProfileImage(userData.profileImageUrl);
         }
       }
     };
@@ -36,7 +43,7 @@ const ProfileImage = ({ onClose }) => {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setPreviewUrl(reader.result);
+        setuserProfilePreview(reader.result);
       };
       reader.readAsDataURL(file);
       setSelectedImage(file);
@@ -69,7 +76,8 @@ const ProfileImage = ({ onClose }) => {
           setSuccessMessage("Profile image saved successfully");
           setLoading(false);
           setSelectedImage(null);
-          setPreviewUrl(null);
+          setuserProfilePreview(null);
+          console.log("Image", userProfileImage);
         })
         .catch((error) => {
           console.error("Error uploading image:", error);
@@ -107,15 +115,15 @@ const ProfileImage = ({ onClose }) => {
           <div className="mt-6">
             <div>
               <div className="w-[350px] h-[40vh] bg-black flex justify-center items-center rounded-xl">
-                {previewUrl ? (
+                {userProfilePreview ? (
                   <img
-                    src={previewUrl}
+                    src={userProfilePreview}
                     alt="Preview"
                     className="max-h-[100%] max-w-[100%] object-cover"
                   />
-                ) : currentImageUrl ? (
+                ) : userProfileImage ? (
                   <img
-                    src={currentImageUrl}
+                    src={userProfileImage}
                     alt="Current"
                     className="max-h-[100%] max-w-[100%] object-cover"
                   />
