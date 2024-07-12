@@ -3,7 +3,6 @@ import { getAuth } from "firebase/auth";
 import { firestore } from "../../Firebase";
 import { getFirestore, doc, getDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
-import { firebase } from "../../Firebase";
 import { AuthContext } from "../../context/AuthContext";
 import AddImage from "../../images/addimage.webp";
 import MyAccount from "./MyAccount";
@@ -14,7 +13,6 @@ import { useUser } from "../../context/UserContext";
 const Dashboard = () => {
   const {
     userData,
-    userEmail,
     setUserData,
     setUserEmail,
     userProfileImage,
@@ -23,16 +21,12 @@ const Dashboard = () => {
 
   const [isProfileImageOpen, setIsProfileImageOpen] = useState(false);
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
-  const [profileImageUrl, setProfileImageUrl] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
   const { logout, isLoggedIn, user } = useContext(AuthContext);
   const auth = getAuth();
   const db = getFirestore();
-  // const user = auth.currentUser;
   const [loading, setLoading] = useState(true);
-  // const [firstName, setFirstName] = useState("");
-  // const [email, setEmail] = useState("");
   const [profileData, setProfileData] = useState({
     age: "",
     height: "",
@@ -60,29 +54,8 @@ const Dashboard = () => {
     }
   };
 
-  // const fetchProfileData = async () => {
-  //   if (user) {
-  //     try {
-  //       const userDocRef = firestore.collection("users").doc(user.uid);
-  //       const userDocSnap = await userDocRef.get();
-
-  //       if (userDocSnap.exists) {
-  //         const userData = userDocSnap.data();
-  //         setProfileData(userData.profileData || {});
-  //       } else {
-  //         console.log("No such document!");
-  //       }
-  //     } catch (error) {
-  //       console.error("Error fetching profile data:", error);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   }
-  // };
-
   useEffect(() => {
     fetchUserData();
-    // fetchProfileData();
   }, [user]);
 
   if (loading) {
@@ -475,7 +448,7 @@ const Dashboard = () => {
                       Age
                     </p>
                     <p className="font-semibold leading-4 text-lightbrown text-base">
-                      {profileData.age || "Not provided"}
+                      {profileData?.age || "Not provided"}
                     </p>
                   </div>
                   <div className="my-5 w-full border-t border-gray opacity-50"></div>
@@ -484,7 +457,7 @@ const Dashboard = () => {
                       Height
                     </p>
                     <p className="font-semibold leading-4 text-lightbrown text-base">
-                      {profileData.height || "Not provided"}
+                      {profileData?.height || "Not provided"}
                     </p>
                   </div>
                   <div className="my-5 w-full border-t border-gray opacity-50"></div>
@@ -493,7 +466,7 @@ const Dashboard = () => {
                       Weight
                     </p>
                     <p className="font-semibold leading-4 text-lightbrown text-base">
-                      {profileData.weight || "Not provided"}
+                      {profileData?.weight || "Not provided"}
                     </p>
                   </div>
                   <div className="my-5 w-full border-t border-gray opacity-50"></div>
@@ -502,7 +475,7 @@ const Dashboard = () => {
                       Goals
                     </p>
                     <p className="font-semibold leading-4 text-lightbrown text-base">
-                      {profileData.selectedGoal || "Not provided"}
+                      {profileData?.selectedGoal || "Not provided"}
                     </p>
                   </div>
                   <div className="my-5 w-full border-t border-gray opacity-50"></div>
@@ -511,7 +484,7 @@ const Dashboard = () => {
                       Daily Meal Amount
                     </p>
                     <p className="font-semibold leading-4 text-lightbrown text-base">
-                      {profileData.selectedMeal || "Not provided"}
+                      {profileData?.selectedMeal || "Not provided"}
                     </p>
                   </div>
                 </div>

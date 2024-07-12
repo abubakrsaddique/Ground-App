@@ -128,7 +128,7 @@ const StartUp = ({ user, db }) => {
 
   useEffect(() => {
     if (userData) {
-      setFirstName(userData.firstName);
+      setFirstName();
     }
   }, [userData]);
 
@@ -149,9 +149,9 @@ const StartUp = ({ user, db }) => {
     }
   };
 
-  if (loading) {
-    return <div>Saving...</div>;
-  }
+  // if (loading) {
+  //   return <div>Saving...</div>;
+  // }
 
   return (
     <div className="min-h-screen w-full  bg-gray">
