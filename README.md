@@ -23,7 +23,7 @@ https://github.com/abubakrsaddique/Ground-App/assets/141554894/d5743946-390d-4a2
 1. Clone the repository:
 
    ```shell
-   git clone [https://github.com/abubakrsaddique/Admin-Panel.git](https://github.com/abubakrsaddique/Ground-App.git)
+   git clone https://github.com/abubakrsaddique/Ground-App.git
 
 2. Navigate to the project directory:
 
